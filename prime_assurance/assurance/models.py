@@ -17,40 +17,23 @@ class RendezVous(models.Model) :
 
 class User(AbstractUser):
 
-    date_de_naissance = models.DateField()
-    telephone = models.CharField( max_length=10)
-    poids = models.IntegerField()
-    taille = models.IntegerField()
-    imc = models.IntegerField() #Formule IMC
-    sexe = models.BooleanField()
-    statut_fumeur = models.BooleanField()
-    region = models.CharField(max_length=50)
-    date_souscription = models.DateTimeField(auto_now=False)
-    anciennete = models.IntegerField(default=0)
-    is_operateur = models.BooleanField()
-    is_client = models.BooleanField()
-    is_propect = models.BooleanField()
-
-    def creer_utilisateur(self) : 
-        User.objects.create_user(
-            username=self.nom_utilisateur,
-            password=self.mot_de_passe,
-            email=self.email,
-            first_name=self.prenom, 
-            last_name=self.nom
-            )
-
-    def authentification(self) :
-        nom_saisi = None
-        pass_saisi = None
-        utilisateur = authenticate(
-            username=nom_saisi, 
-            password=pass_saisi)
-        if utilisateur is not None : 
-            print("authentification réussie")
-        else : 
-            print("echec d'authentification")
+    date_de_naissance = models.DateField(null = True)
+    telephone = models.CharField( max_length=10,null = True)
+    poids = models.IntegerField(null = True)
+    taille = models.IntegerField(null = True)
+    imc = models.IntegerField(null = True) #Formule IMC
+    sexe = models.BooleanField(null = True)
+    statut_fumeur = models.BooleanField(null = True)
+    region = models.CharField(max_length=50, null = True)
+    date_souscription = models.DateTimeField(auto_now=False,null = True)
+    anciennete = models.IntegerField(default=0,null = True)
+    is_operateur = models.BooleanField(null = True)
+    is_client = models.BooleanField(null = True)
+    is_prospect = models.BooleanField(null = True)
     
+
+    
+
 
 class Prediction(models.Model):
     id_prospect = models.ForeignKey(User, on_delete=models.CASCADE) # ne pas oublier d'enlever les quotes
