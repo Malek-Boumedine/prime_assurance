@@ -15,6 +15,7 @@ class User(AbstractUser):
     region = models.CharField(max_length=50, null = True)
     date_souscription = models.DateTimeField(auto_now=False,null = True)
     anciennete = models.IntegerField(default=0,null = True)
+    poste = models.CharField(max_length=50, null=True)
     is_operateur = models.BooleanField(null = True)
     is_client = models.BooleanField(null = True)
     is_prospect = models.BooleanField(null = True)

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Liste des opérateurs{% endblock%}
+
+{%block content%}
+    <h2>Liste des opérateurs </h2>
+    <form method="get" action=''>
+        <input type="text" name ="q" placeholder = "Rechercher un opérateur" value="{{ request.GET.q }}">
+        <button type = "submit">Rechercher</button>
+    </form>
+    
+    <ul>
+        {% for operateur in operateurs %}
+        <li>
+            <p><strong> {{operateur.username}}</strong> - {{operateur.first_name}} {{operateur.last_name}}</p>
+            <p>{{operateur.anciennete}} ans d'anciennete - {{operateur.poste}}</p>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
