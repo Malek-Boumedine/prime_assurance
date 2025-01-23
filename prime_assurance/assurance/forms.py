@@ -1,45 +1,28 @@
 import hashlib
 from django import forms
-from .models import User # Opérateur, Client, Prospect
-from django.forms import ModelForm, Form
+from .models import User
+from datetime import datetime
+import pandas as pd
+from django.forms import ModelForm
 
+# from .model_pred import AgeTransformer, BmiTransformer
+import cloudpickle
 
+#region ouverture du modèle
+
+with open('assurance/basic_linreg_model.pkl', 'rb') as file:
+    model_pred = cloudpickle.load(file)
+
+#region Login form
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150, label='Nom d’utilisateur')
     password = forms.CharField(max_length=150, widget=forms.PasswordInput, label='Mot de passe')
 
-# class OperateurFrom(ModelForm):
-#     class Meta:
 
+
+#region Formulaire opérateur
 
 class OperateurForm(ModelForm):
-    sexe = forms.ChoiceField(
-        choices=[('male', 'Homme'), ('female', 'Femme')],
-        widget=forms.RadioSelect
-        # required=False 
-    )
-    poste = forms.ChoiceField(
-    choices=[('courtier', 'Courtier'), ('manager', 'Manager')],
-    widget=forms.RadioSelect,
-    required=False
-    )
-
-    # is_operateur = forms.ChoiceField(
-    #     choices=[(0, 'Non'), (1, 'Oui')],
-    #     widget=forms.RadioSelect,
-    #     required=False
-    # )
-
-    # is_client = forms.ChoiceField(
-    #     choices=[(0, 'Non'), (1, 'Oui')],
-    #     widget=forms.RadioSelect,
-    #     required=False
-    # )
-    # is_prospect = forms.ChoiceField(
-    #     choices=[(0, 'Non'), (1, 'Oui')],
-    #     widget=forms.RadioSelect,
-    #     required=False
-    # )
 
     class Meta:
         model = User
@@ -64,29 +47,13 @@ class OperateurForm(ModelForm):
         
         return user
 
+#region Formulaire client
+
 class ClientForm(ModelForm):
 
-    sexe = forms.ChoiceField(
-        choices=[('male', 'Homme'), ('female', 'Femme')],
-        widget=forms.RadioSelect,
-        required=False 
-    )
-
-    villes = forms.ChoiceField(
-        choices=[('northest', 'Northest'), ('northeast', 'Northeast'),
-                 ('southest', 'Southest'), ('southeast', 'Southeast')],
-        widget=forms.RadioSelect,
-        required=False
-    )
-
-    statut_fumeur = forms.ChoiceField(
-        choices=[('yes', 'oui'), ('no', 'Non')],
-        widget=forms.RadioSelect,
-        required=False
-    )
     class Meta:
         model = User
-        fields = ['first_name','last_name','username','password','email','date_de_naissance','telephone','poids','taille']
+        fields = ['first_name','last_name','username','sexe','region','statut_fumeur','nombre_enfant','password','email','date_de_naissance','telephone','poids','taille']
 
     def save(self, commit=True):
         # Récupérer l'instance de l'utilisateur avant d'ajouter le hachage
@@ -101,7 +68,21 @@ class ClientForm(ModelForm):
             password = self.cleaned_data['password']
             hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
             user.password = hashed_password
+            user.age = datetime.now().year - user.date_de_naissance.year
             user.is_client = True
+
+            # #faire un dataframe pour model
+            df_pour_model = pd.DataFrame([[user.age, user.sexe,user.imc,user.nombre_enfant,user.statut_fumeur,user.region]], columns=['age','sex','bmi','children','smoker','region'])
+            print(df_pour_model)
+            print(df_pour_model.dtypes)
+
+            with open('assurance/basic_linreg_model.pkl', 'rb') as file:
+                model_pred = cloudpickle.load(file)
+            charge = model_pred.predict(df_pour_model)
+            print(charge)
+            print(charge[0])
+            user.charges = charge[0]
+
         
         
         
@@ -111,7 +92,15 @@ class ClientForm(ModelForm):
         
         return user
 
+#region Formulaire prospect
+
+
 class ProspectForm(ClientForm):
+
+
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','username','sexe','region','statut_fumeur','nombre_enfant','password','email','date_de_naissance','telephone','poids','taille']
 
     def save(self, commit=True):
         # Récupérer l'instance de l'utilisateur avant d'ajouter le hachage
@@ -126,12 +115,64 @@ class ProspectForm(ClientForm):
             password = self.cleaned_data['password']
             hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
             user.password = hashed_password
-            user.is_client = False
-            user.is_prospect = True
+            user.age = datetime.now().year - user.date_de_naissance.year
+            user.is_client = True
+
+            # #faire un dataframe pour model
+            df_pour_model = pd.DataFrame([[user.age, user.sexe,user.imc,user.nombre_enfant,user.statut_fumeur,user.region]], columns=['age','sex','bmi','children','smoker','region'])
+            charge = model_pred.predict(df_pour_model)
+            user.charges = charge[0]
+
         
         
         
         # Sauvegarder l'utilisateur
         if commit:
             user.save()
+        
+        return user
+
+#region Formulaire client
+
+class ClientForm(ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','username','sexe','region','statut_fumeur','nombre_enfant','password','email','date_de_naissance','telephone','poids','taille']
+
+    def save(self, commit=True):
+        # Récupérer l'instance de l'utilisateur avant d'ajouter le hachage
+        user = super().save(commit=False)
+
+        #éviter l'erreur des champs vides
+        if user.poids > 0 and user.taille >0 :
+            user.imc = user.poids / ((user.taille /100) ** 2)
+        
+        # Si le mot de passe a été modifié, hachage avec SHA-256
+        if self.cleaned_data.get('password'):
+            password = self.cleaned_data['password']
+            hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            user.password = hashed_password
+            user.age = datetime.now().year - user.date_de_naissance.year
+            user.is_client = True
+
+            # #faire un dataframe pour model
+            df_pour_model = pd.DataFrame([[user.age, user.sexe,user.imc,user.nombre_enfant,user.statut_fumeur,user.region]], columns=['age','sex','bmi','children','smoker','region'])
+            charge = model_pred.predict(df_pour_model)
+            user.charges = charge[0]
+
+        
+        
+        
+        # Sauvegarder l'utilisateur
+        if commit:
+            user.save()
+        
+        return user
+
+
+
+
+
+
     
