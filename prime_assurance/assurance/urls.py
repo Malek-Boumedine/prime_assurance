@@ -1,17 +1,25 @@
 from django.urls import path, include
-from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, AProposView, InscriptionView
+from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, AProposView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect
+from django.views.generic import TemplateView
+
 
 
 
 urlpatterns = [
-    # path("", AccueilView.as_view(), name="accueil"),
+    path('liste_operateur/', ListeOperateurs.as_view(), name='liste_operateurs'),
+    path('liste_clients/', ListeClients.as_view(), name='liste_clients'),
+    path('liste_prospects/', ListeProspects.as_view(), name='liste_prospects'),
+
+    path('nouveloperateur/', EnregistrerOperateur.as_view(), name = 'enregistrer_operateur'),
+    path('nouveauclient/', EnregistrerClient.as_view(), name = 'enregistrer_client'),
+    path('nouveauprospect/', EnregistrerProspect.as_view(), name = 'enregistrer_prospect'),
+
     path("accueil/", AccueilView.as_view(), name="accueil"),
     path("authentification/", AuthentificationView.as_view(), name="authentification"),
     path("couverture/", CouvertureView.as_view(), name="couverture"),
     path("devis/", DevisView.as_view(), name="devis"),
     path("apropos/", AProposView.as_view(), name="apropos"),
     path("inscription/", InscriptionView.as_view(), name="inscription"),
-    
+
+
 ]
-
-
