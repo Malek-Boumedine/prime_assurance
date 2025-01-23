@@ -22,12 +22,12 @@ class User(AbstractUser):
     nombre_enfant = models.IntegerField(null=True)
     poids = models.IntegerField(null = True)
     taille = models.IntegerField(null = True)
-    imc = models.IntegerField(null = True) #Formule IMC
-    sexe = models.CharField(max_length=10,null = True)
-    nombre_enfants = models.IntegerField(null = True)
-    statut_fumeur = models.CharField(max_length=3,null = True)
-    region = models.CharField(max_length=50, null = True)
-    charges = models.IntegerField(null=True)
+    imc = models.FloatField(null = True) 
+    sexe = models.CharField(max_length=10, choices=[('male', 'Homme'), ('female', 'Femme')], blank=True, null=True)
+    region = models.CharField(max_length=20, choices=[('northwest', 'Northwest'), ('northeast', 'Northeast'),
+                                                      ('southwest', 'Southwest'), ('southeast', 'Southeast')],
+                              blank=True, null=True)
+    statut_fumeur = models.CharField(max_length=3, choices=[('yes', 'Oui'), ('no', 'Non')], blank=True, null=True)
     date_souscription = models.DateTimeField(auto_now=False,null = True)
     anciennete = models.IntegerField(default=0,null = True)
     poste = models.CharField(max_length=10, choices=[('courtier', 'Courtier'), ('manager', 'Manager')], blank=True, null=True)
