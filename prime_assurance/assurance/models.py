@@ -9,8 +9,8 @@ from django.contrib.auth.models import AbstractUser
 
 class RendezVous(models.Model) : 
     Date_heure = models.DateTimeField()
-    # id_client = models.ForeignKey("Client", on_delete=models.CASCADE)
-    # id_operateur = models.ForeignKey("Client", on_delete=models.CASCADE)
+    # id_client = models.ForeignKey("User", on_delete=models.CASCADE)
+    # id_operateur = models.ForeignKey("User", on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
     motif = models.CharField(max_length=100)
 
@@ -31,9 +31,6 @@ class User(AbstractUser):
     is_client = models.BooleanField(null = True)
     is_prospect = models.BooleanField(null = True)
     
-
-    
-
 
 class Prediction(models.Model):
     id_prospect = models.ForeignKey(User, on_delete=models.CASCADE) # ne pas oublier d'enlever les quotes

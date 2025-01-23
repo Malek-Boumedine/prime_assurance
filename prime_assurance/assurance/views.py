@@ -1,46 +1,80 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import View, ListView, TemplateView
 from django.views.generic.edit import CreateView
-from .forms import OperateurFrom
 from django.urls import reverse_lazy
+from django.contrib.auth import login, authenticate, logout
 from .models import User
+from . import forms
+from .forms import LoginForm
+from django.http import HttpResponse
 
 
 # Create your views here.
 
-class AuthentificationView(ListView) :
-    model = User
-    template_name = "authentification.html"
-    context_object_name = "utilisateurs"
+class AccueilView(View) : 
+    template_name = "assurance/accueil.html"
     
-    def connexion(self) : 
-        utilisateurs = User.objects.all().nom_utilisateur
-        nom_utilisateur = self.request.GET.get("nom_utilisateur")
-        mot_de_passe = self.request.GET.get("mot_de_passe")
-        
-        if nom_utilisateur in utilisateurs :
-            if mot_de_passe == utilisateurs.mot_de_passe : 
-                print("connexion OK")
-            else : 
-                print("mot de passe incorrecte")
-        else : 
-            print("nom d'utilisateur incorrecte")
+    def get(self, request) :
+        return render(request, self.template_name)
+
+
+class AuthentificationView(View):
+    template_name = "assurance/authentification.html"
+
+    def get(self, request):
+        form = LoginForm()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request):
+        form = LoginForm(request.POST)
+        message = ""
+        if form.is_valid():
+            user = authenticate(
+                username=form.cleaned_data["username"],
+                password=form.cleaned_data["password"],
+            )
+            if user is not None:
+                login(request, user)
+                message = f"Bienvenue {user.username}! Vous êtes maintenant connecté. Vous allez être redirigé vers votre espace personnel"
+            else:
+                message = "Identifiants invalides."
+        return render(request, self.template_name, {"form": form, "message": message})
+    
+    
+class CouvertureView(View) : 
+    template_name = "assurance/couverture.html"
+    
+    def get(self, request) :
+        return render(request, self.template_name)
+
+
+class DevisView(View) : 
+    template_name = "assurance/devis.html"
+    
+    def get(self, request) :
+        return render(request, self.template_name)
+
+
+class AProposView(View) : 
+    template_name = "assurance/apropos.html"
+    
+    def get(self, request) :
+        return render(request, self.template_name)
+
+
+class InscriptionView(View) : 
+    template_name = "assurance/inscription.html"
+    
+    def get(self, request) :
+        return render(request, self.template_name)
+
+
+
 
 class Listeoperateur(ListView):
     model = User
-    template_name = 'assurance/liste_operateur.html'
-    context_object_name = 'operateurs'
+    template_name = "assurance/liste_operateur.html"
+    context_object_name = "operateurs"
 
     def get_queryset(self):
         return User.objects.filter(is_operateur = 1)
-    
-# class Listeoperateur(ListView):
-#     model = Operateur
-#     template_name = 'assurance/liste_operateur.html'
-#     context_object_name = 'operateur'
-
-#     def get_queryset(self):
-#         query = self.request.GET.get('q')
-#         if query:
-#             return Operateur.objects.filter(Titre__icontains = query)
-#         return Operateur.objects.all()
