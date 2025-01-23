@@ -1,0 +1,14 @@
+{%extends 'base.html'%}
+
+{%block title %} Enregistrer prospect {% endblock%}
+
+{%block content %}
+    <h2>Enregistrer un prospect</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type = 'submit'> Créer </button>
+
+        </form>
+
+{% endblock %}

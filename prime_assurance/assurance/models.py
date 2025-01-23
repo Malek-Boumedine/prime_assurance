@@ -10,8 +10,8 @@ class User(AbstractUser):
     poids = models.IntegerField(null = True)
     taille = models.IntegerField(null = True)
     imc = models.IntegerField(null = True) #Formule IMC
-    sexe = models.BooleanField(null = True)
-    statut_fumeur = models.BooleanField(null = True)
+    sexe = models.CharField(max_length=10,null = True)
+    statut_fumeur = models.CharField(max_length=3,null = True)
     region = models.CharField(max_length=50, null = True)
     date_souscription = models.DateTimeField(auto_now=False,null = True)
     anciennete = models.IntegerField(default=0,null = True)
