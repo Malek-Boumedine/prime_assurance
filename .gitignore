@@ -1,4 +1,5 @@
 .venv
+db.sqlite3
 prime_assurance/assurance/__pycache__
 prime_assurance/prime_assurance/__pycache__
 prime_assurance/db.sqlite3
