@@ -17,7 +17,9 @@ class RendezVous(models.Model):
 class User(AbstractUser):
 
     date_de_naissance = models.DateField(null = True)
+    age = models.IntegerField(null=True)
     telephone = models.CharField( max_length=10,null = True)
+    nombre_enfant = models.IntegerField(null=True)
     poids = models.IntegerField(null = True)
     taille = models.IntegerField(null = True)
     imc = models.IntegerField(null = True) #Formule IMC
@@ -28,7 +30,8 @@ class User(AbstractUser):
     charges = models.IntegerField(null=True)
     date_souscription = models.DateTimeField(auto_now=False,null = True)
     anciennete = models.IntegerField(default=0,null = True)
-    poste = models.CharField(max_length=50, null=True)
+    poste = models.CharField(max_length=10, choices=[('courtier', 'Courtier'), ('manager', 'Manager')], blank=True, null=True)
+    charges = models.FloatField(null=True)
     is_operateur = models.BooleanField(null = True)
     is_client = models.BooleanField(null = True)
     is_prospect = models.BooleanField(null = True)
