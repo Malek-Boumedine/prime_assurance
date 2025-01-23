@@ -1,28 +1,22 @@
-{% load static%}
-
+{% load static %}
 <!DOCTYPE html>
-<html lang="fr">
+<html class="h-full bg-gray-50" lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/style.css'%}">
-
-    <title>{% block title %} Bienvenu chez Assur'aimant {% endblock %}</title>
+    <title>{% block title %}Prime Assurance{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    {% comment %} {% include "includes/header.html" %} {% endcomment %}
+<body class="h-full flex flex-col min-h-screen">
     <header>
-        <h1>Assur'Aimant on démagnétise le risque </h1>
-        <nav>
-            <a href="/">Accueil</a>
-        </nav>
+        {% include "includes/header.html" %}
     </header>
-    <main>{% block content %}{%endblock%}
-
+    <main class="flex-grow">
+        {% block content %}
+        {% endblock %}
     </main>
-    <footer>
-        <p>&copy; Site assur'aimant by Simplon</p>
-    </footer>
-    
+    {% block footer %}
+        {% include "includes/footer.html" %}
+    {% endblock %}  
 </body>
 </html>

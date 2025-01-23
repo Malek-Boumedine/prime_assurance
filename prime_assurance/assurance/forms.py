@@ -1,7 +1,12 @@
-from django import forms
 import hashlib
+from django import forms
 from .models import User # Opérateur, Client, Prospect
 from django.forms import ModelForm, Form
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=150, label='Nom d’utilisateur')
+    password = forms.CharField(max_length=150, widget=forms.PasswordInput, label='Mot de passe')
 
 # class OperateurFrom(ModelForm):
 #     class Meta:
