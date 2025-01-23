@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.generic import View, ListView, TemplateView
 from .models import Prediction, User
 from django.views.generic.edit import CreateView
-from .forms import OperateurForm, ClientForm, ProspectForm
+from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, authenticate, logout
 from .models import User
@@ -42,8 +42,24 @@ class AuthentificationView(View):
             else:
                 message = "Identifiants invalides."
         return render(request, self.template_name, {"form": form, "message": message})
+
     
-    
+class InscriptionView(View):
+    template_name = 'assurance/inscription.html'
+    success_url = reverse_lazy('accueil')
+
+    def get(self, request):
+        form = ClientForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(self.success_url)
+        return render(request, self.template_name, {'form': form})
+
+
 class CouvertureView(View) : 
     template_name = "assurance/couverture.html"
     
@@ -51,11 +67,23 @@ class CouvertureView(View) :
         return render(request, self.template_name)
 
 
+
 class DevisView(View) : 
     template_name = "assurance/devis.html"
+    success_url = reverse_lazy("accueil")
     
     def get(self, request) :
-        return render(request, self.template_name)
+        form = DevisForm
+        return render(request, self.template_name, {"form" : form})
+    
+    def post(self, request):
+        form = DevisForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(self.success_url)
+        return render(request, self.template_name, {'form': form})
+
+
 
 
 class AProposView(View) : 
@@ -65,11 +93,8 @@ class AProposView(View) :
         return render(request, self.template_name)
 
 
-class InscriptionView(View) : 
-    template_name = "assurance/inscription.html"
-    
-    def get(self, request) :
-        return render(request, self.template_name)
+
+
 
 
 
