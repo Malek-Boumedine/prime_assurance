@@ -1,7 +1,8 @@
 from django import forms
 import hashlib
 from .models import User # Opérateur, Client, Prospect
-from django.forms import ModelForm, Form
+from django.forms import ModelForm
+import pickle
 
 # class OperateurFrom(ModelForm):
 #     class Meta:
@@ -18,23 +19,6 @@ class OperateurForm(ModelForm):
     widget=forms.RadioSelect,
     required=False
     )
-
-    # is_operateur = forms.ChoiceField(
-    #     choices=[(0, 'Non'), (1, 'Oui')],
-    #     widget=forms.RadioSelect,
-    #     required=False
-    # )
-
-    # is_client = forms.ChoiceField(
-    #     choices=[(0, 'Non'), (1, 'Oui')],
-    #     widget=forms.RadioSelect,
-    #     required=False
-    # )
-    # is_prospect = forms.ChoiceField(
-    #     choices=[(0, 'Non'), (1, 'Oui')],
-    #     widget=forms.RadioSelect,
-    #     required=False
-    # )
 
     class Meta:
         model = User
@@ -121,12 +105,20 @@ class ProspectForm(ClientForm):
             password = self.cleaned_data['password']
             hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
             user.password = hashed_password
-            user.is_client = False
-            user.is_prospect = True
+
+        user.is_client = False
+        user.is_prospect = True
         
         
         
         # Sauvegarder l'utilisateur
         if commit:
             user.save()
+
+
+
+with open('prime_assurance/static/best_lasso_model.pkl', 'rb') as file:
+    model_pred = pickle.load(file)
+
+class PredictionForm(ModelForm):
     
