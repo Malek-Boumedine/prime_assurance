@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.generic import View, ListView, TemplateView, DetailView
 from .models import Prediction, User
 from django.views.generic.edit import CreateView
-from .forms import OperateurForm, ClientForm, ProspectForm
+from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.messages.views import SuccessMessageMixin
 from .models import User
 from . import forms
 from .forms import LoginForm
@@ -38,11 +40,40 @@ class AuthentificationView(View):
             )
             if user is not None:
                 login(request, user)
-                message = f"Bienvenue {user.username}! Vous êtes maintenant connecté. Vous allez être redirigé vers votre espace personnel"
+                return redirect("page_utilisateur_client")
+                # message = f"Bienvenue {user.username}! Vous êtes maintenant connecté. Vous allez être redirigé vers votre espace personnel"
+                
             else:
                 message = "Identifiants invalides."
         return render(request, self.template_name, {"form": form, "message": message})
+
     
+class InscriptionView(View):
+    template_name = 'assurance/inscription.html'
+    success_url = reverse_lazy('accueil')
+
+    def get(self, request):
+        form = ClientForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(self.success_url)
+        return render(request, self.template_name, {'form': form})
+
+
+class password_reset(View) : 
+    template_name = "assurance/password_reset.html"
+    
+    def get(self, request) :
+        return render(request, self.template_name)
+    
+    def post(self, request):
+        email = request.POST.get("email")
+        return redirect("url de reset")
+
 
 class CouvertureView(View) : 
     template_name = "assurance/couverture.html"
@@ -53,9 +84,18 @@ class CouvertureView(View) :
 
 class DevisView(View) : 
     template_name = "assurance/devis.html"
+    success_url = reverse_lazy("accueil")
     
     def get(self, request) :
-        return render(request, self.template_name)
+        form = DevisForm
+        return render(request, self.template_name, {"form" : form})
+    
+    def post(self, request):
+        form = DevisForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(self.success_url)
+        return render(request, self.template_name, {'form': form})
 
 
 class AProposView(View) : 
@@ -64,13 +104,11 @@ class AProposView(View) :
     def get(self, request) :
         return render(request, self.template_name)
 
-
-class InscriptionView(View) : 
-    template_name = "assurance/inscription.html"
+class RendezVous(View) : 
+    template_name = "assurance/rendezvous.html"
     
     def get(self, request) :
         return render(request, self.template_name)
-
 
 
 
@@ -126,8 +164,7 @@ class ClientProfil(ListView):
     model = User 
     template_name = 'assurance/page_utilisateur_client.html'
     context_object_name = 'client'  
-    username = "hhhhh"
     def get_queryset(self):
-        return User.objects.filter(username = self.username)
-        # return User.objects.filter()
+        username = self.request.user.username
+        return User.objects.filter(username = username)[0]
     
