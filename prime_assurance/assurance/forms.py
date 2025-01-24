@@ -11,7 +11,7 @@ import cloudpickle
 
 #region ouverture du modèle
 
-with open('assurance/basic_linreg_model.pkl', 'rb') as file:
+with open('assurance/best_lasso_model.pkl', 'rb') as file:
     model_pred = cloudpickle.load(file)
 
 #region Login form

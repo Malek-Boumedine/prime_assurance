@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}page client{% endblock%}
+
+{%block content%}
+    <h2>page client </h2>
+    <ul>
+        {% for c in client %}
+        <li>
+            <p><strong>client :               </strong>{{c.username}} </p>
+            <p><strong>Nom :                  </strong>{{c.last_name}}</p>
+            <p><strong>Prénom :               </strong>{{c.first_name}}</p>
+            <p><strong>genre :                </strong>{{c.sexe}}</p>
+            <p><strong>téléphone :            </strong>{{c.telephone}}</p>
+            <p><strong>email :                </strong>{{c.email}}</p>
+            <p><strong>date de naissance :    </strong>{{c.date_de_naissance}}</p>
+            <p><strong>age :                  </strong>{{c.age}}</p>
+            <p><strong>taille :               </strong>{{c.taille}}</p>
+            <p><strong>poids :                </strong>{{c.poids}}</p>
+            <p><strong>imc :                  </strong>{{c.imc}}</p>
+            <p><strong>statut fumeur :        </strong>{{c.statut_fumeur}}</p>
+            <p><strong>nombre d'enfants :     </strong>{{c.nombre_enfant}}</p>
+            <p><strong>region :               </strong>{{c.region}}</p>
+            <p><strong>date de souscription : </strong>{{c.date_souscription}}</p>
+            <p><strong>charges :              </strong>{{c.charges}}</p>
+
+        </li>
+        {% endfor %}            
+    </ul>
+{% endblock %}

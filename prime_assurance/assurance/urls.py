@@ -1,11 +1,13 @@
 from django.urls import path, include
-from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, AProposView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect, RendezVous, password_reset
+from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, AProposView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect, RendezVous, password_reset, ClientProfil
 from django.views.generic import TemplateView
 
 
 
 
 urlpatterns = [
+    path("", AccueilView.as_view(), name="home"),  # Ajout pour gérer l'URL racine
+
     path('liste_operateur/', ListeOperateurs.as_view(), name='liste_operateurs'),
     path('liste_clients/', ListeClients.as_view(), name='liste_clients'),
     path('liste_prospects/', ListeProspects.as_view(), name='liste_prospects'),
@@ -22,7 +24,6 @@ urlpatterns = [
     path("inscription/", InscriptionView.as_view(), name="inscription"),
     path("rendezvous/", RendezVous.as_view(), name="rendezvous"),
     path("password_reset/", password_reset.as_view(), name="password_reset"),
-    
-
+    path("pageclient/", ClientProfil.as_view(), name="page_client"),
 
 ]
