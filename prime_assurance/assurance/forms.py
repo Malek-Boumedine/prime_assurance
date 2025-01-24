@@ -84,8 +84,6 @@ class ClientForm(ModelForm):
             user.charges = charge[0]
 
         
-        
-        
         # Sauvegarder l'utilisateur
         if commit:
             user.save()
@@ -101,7 +99,7 @@ import os
 class DevisForm(ClientForm):
     class Meta(ClientForm.Meta):
         model = User
-        fields = ['last_name', 'first_name', 'email', 'telephone', 'date_de_naissance', 'sexe', 'taille', 'poids', 'nombre_enfants', 'statut_fumeur', 'region']
+        fields = ['last_name', 'first_name', 'email', 'telephone', 'date_de_naissance', 'sexe', 'taille', 'poids', 'nombre_enfant', 'statut_fumeur', 'region']
 
     def save(self, commit=True):
         user = super().save(commit=False)

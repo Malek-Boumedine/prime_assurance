@@ -5,6 +5,8 @@ from django.views.generic.edit import CreateView
 from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.messages.views import SuccessMessageMixin
 from .models import User
 from . import forms
 from .forms import LoginForm
@@ -38,7 +40,9 @@ class AuthentificationView(View):
             )
             if user is not None:
                 login(request, user)
-                message = f"Bienvenue {user.username}! Vous êtes maintenant connecté. Vous allez être redirigé vers votre espace personnel"
+                return redirect("accueil")
+                # message = f"Bienvenue {user.username}! Vous êtes maintenant connecté. Vous allez être redirigé vers votre espace personnel"
+                
             else:
                 message = "Identifiants invalides."
         return render(request, self.template_name, {"form": form, "message": message})
@@ -60,12 +64,22 @@ class InscriptionView(View):
         return render(request, self.template_name, {'form': form})
 
 
+class password_reset(View) : 
+    template_name = "assurance/password_reset.html"
+    
+    def get(self, request) :
+        return render(request, self.template_name)
+    
+    def post(self, request):
+        email = request.POST.get("email")
+        return redirect("url de reset")
+
+
 class CouvertureView(View) : 
     template_name = "assurance/couverture.html"
     
     def get(self, request) :
         return render(request, self.template_name)
-
 
 
 class DevisView(View) : 
@@ -84,18 +98,17 @@ class DevisView(View) :
         return render(request, self.template_name, {'form': form})
 
 
-
-
 class AProposView(View) : 
     template_name = "assurance/apropos.html"
     
     def get(self, request) :
         return render(request, self.template_name)
 
-
-
-
-
+class RendezVous(View) : 
+    template_name = "assurance/rendezvous.html"
+    
+    def get(self, request) :
+        return render(request, self.template_name)
 
 
 

@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, AProposView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect
+from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, AProposView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect, RendezVous, password_reset
 from django.views.generic import TemplateView
 
 
@@ -20,6 +20,9 @@ urlpatterns = [
     path("devis/", DevisView.as_view(), name="devis"),
     path("apropos/", AProposView.as_view(), name="apropos"),
     path("inscription/", InscriptionView.as_view(), name="inscription"),
+    path("rendezvous/", RendezVous.as_view(), name="rendezvous"),
+    path("password_reset/", password_reset.as_view(), name="password_reset"),
+    
 
 
 ]

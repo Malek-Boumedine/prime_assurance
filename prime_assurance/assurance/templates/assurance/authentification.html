@@ -34,7 +34,7 @@
                         {{ form.password.label }}
                     </label>
                     <div class="text-sm">
-                        <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Mot de passe oublié?</a>
+                        <a href="{% url 'password_reset' %}" class="font-semibold text-indigo-600 hover:text-indigo-500">Mot de passe oublié?</a>
                     </div>
                 </div>
                 <div class="mt-2">
@@ -51,7 +51,7 @@
 
         <p class="mt-10 text-center text-sm text-gray-500">
             Pas encore membre?
-            <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Créer un compte</a>
+            <a href="{% url 'inscription' %}" class="font-semibold text-indigo-600 hover:text-indigo-500">Créer un compte</a>
         </p>
     </div>
 </div>
