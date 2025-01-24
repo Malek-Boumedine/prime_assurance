@@ -43,7 +43,7 @@ class AuthentificationView(View):
                 message = "Identifiants invalides."
         return render(request, self.template_name, {"form": form, "message": message})
     
-    
+
 class CouvertureView(View) : 
     template_name = "assurance/couverture.html"
     
