@@ -24,6 +24,6 @@ urlpatterns = [
     path("inscription/", InscriptionView.as_view(), name="inscription"),
     path("rendezvous/", RendezVous.as_view(), name="rendezvous"),
     path("password_reset/", password_reset.as_view(), name="password_reset"),
-    path("pageclient/", ClientProfil.as_view(), name="page_client"),
+    path("page_utilisateur_client/", ClientProfil.as_view(), name="page_utilisateur_client"),
 
 ]

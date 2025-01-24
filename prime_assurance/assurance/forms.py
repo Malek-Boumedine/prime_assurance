@@ -54,6 +54,9 @@ class ClientForm(ModelForm):
     class Meta:
         model = User
         fields = ['first_name','last_name','username','sexe','region','statut_fumeur','nombre_enfant','password','email','date_de_naissance','telephone','poids','taille']
+        widgets = {
+            'date_de_naissance': forms.DateInput(attrs={'type': 'date'})
+        }
 
     def save(self, commit=True):
         # Récupérer l'instance de l'utilisateur avant d'ajouter le hachage
@@ -69,7 +72,8 @@ class ClientForm(ModelForm):
             password = self.cleaned_data['password']
             user.set_password(password)  # Utilise le hashage sécurisé de Django
             user.age = datetime.now().year - user.date_de_naissance.year
-            user.is_client = True      
+            user.is_client = False      
+            user.is_prospect = True
 
             # #faire un dataframe pour model
             df_pour_model = pd.DataFrame([[user.age, user.sexe,user.imc,user.nombre_enfant,user.statut_fumeur,user.region]], columns=['age','sex','bmi','children','smoker','region'])

@@ -40,7 +40,7 @@ class AuthentificationView(View):
             )
             if user is not None:
                 login(request, user)
-                return redirect("accueil")
+                return redirect("page_utilisateur_client")
                 # message = f"Bienvenue {user.username}! Vous êtes maintenant connecté. Vous allez être redirigé vers votre espace personnel"
                 
             else:
@@ -164,8 +164,7 @@ class ClientProfil(ListView):
     model = User 
     template_name = 'assurance/page_utilisateur_client.html'
     context_object_name = 'client'  
-    username = "hhhhh"
     def get_queryset(self):
-        return User.objects.filter(username = self.username)
-        # return User.objects.filter()
+        username = self.request.user.username
+        return User.objects.filter(username = username)[0]
     
