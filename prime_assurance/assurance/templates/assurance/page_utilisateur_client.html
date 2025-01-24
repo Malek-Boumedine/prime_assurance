@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}page client{% endblock%}
+
+{%block content%}
+    <h2>page client </h2>
+    <form method="get" action=''>
+        <input type="text" id = user.username value="{{ request.GET.q }}">
+    </form>
+    
+    <ul>
+        <li>
+            <p><strong> Nom et prenom :</strong> - {{user.first_name}} {{user.last_name}}</p>
+            <p><strong> votre age :</strong> - {{user.age}}     {{user.date_de_naissance}}</p>
+
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
