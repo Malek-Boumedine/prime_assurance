@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import View, ListView, TemplateView
+from django.views.generic import View, ListView, TemplateView, DetailView
 from .models import Prediction, User
 from django.views.generic.edit import CreateView
 from .forms import OperateurForm, ClientForm, ProspectForm
@@ -121,4 +121,13 @@ class ListeProspects(ListView):
 
     def get_queryset(self):
         return User.objects.filter(is_prospect = 1)
+
+class ClientProfil(ListView):
+    model = User 
+    template_name = 'assurance/page_utilisateur_client.html'
+    context_object_name = 'client'  
+    username = "hhhhh"
+    def get_queryset(self):
+        return User.objects.filter(username = self.username)
+        # return User.objects.filter()
     
