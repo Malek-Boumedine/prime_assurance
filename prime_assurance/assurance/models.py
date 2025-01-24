@@ -7,13 +7,12 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 
-class RendezVous(models.Model) : 
+class RendezVous(models.Model):
     Date_heure = models.DateTimeField()
-    # id_client = models.ForeignKey("User", on_delete=models.CASCADE)
-    # id_operateur = models.ForeignKey("User", on_delete=models.CASCADE)
+    id_client = models.ForeignKey("User", on_delete=models.SET_NULL, null=True, related_name='rdv_client')
+    id_operateur = models.ForeignKey("User", on_delete=models.SET_NULL, null=True, related_name='rdv_operateur')
     type = models.CharField(max_length=100)
     motif = models.CharField(max_length=100)
-
 
 class User(AbstractUser):
 
@@ -23,7 +22,7 @@ class User(AbstractUser):
     nombre_enfant = models.IntegerField(null=True)
     poids = models.IntegerField(null = True)
     taille = models.IntegerField(null = True)
-    imc = models.FloatField(null = True) #Formule IMC
+    imc = models.FloatField(null = True) 
     sexe = models.CharField(max_length=10, choices=[('male', 'Homme'), ('female', 'Femme')], blank=True, null=True)
     region = models.CharField(max_length=20, choices=[('northwest', 'Northwest'), ('northeast', 'Northeast'),
                                                       ('southwest', 'Southwest'), ('southeast', 'Southeast')],
@@ -36,7 +35,7 @@ class User(AbstractUser):
     is_operateur = models.BooleanField(null = True)
     is_client = models.BooleanField(null = True)
     is_prospect = models.BooleanField(null = True)
-    
+
 
 class Prediction(models.Model):
     id_prospect = models.ForeignKey(User, on_delete=models.CASCADE) # ne pas oublier d'enlever les quotes
