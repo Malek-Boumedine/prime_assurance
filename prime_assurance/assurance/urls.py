@@ -1,6 +1,5 @@
 from django.urls import path, include
-from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, AProposView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect, RendezVous, password_reset, ClientProfil, ModifierOperateur, ModifierCLient
-from django.views.generic import TemplateView
+from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect, RendezVous, password_reset, ClientProfil, deconnexion, ModifierProfilView, ModifierOperateur, ModifierCLient
 
 
 
@@ -20,11 +19,13 @@ urlpatterns = [
     path("authentification/", AuthentificationView.as_view(), name="authentification"),
     path("couverture/", CouvertureView.as_view(), name="couverture"),
     path("devis/", DevisView.as_view(), name="devis"),
-    path("apropos/", AProposView.as_view(), name="apropos"),
     path("inscription/", InscriptionView.as_view(), name="inscription"),
     path("rendezvous/", RendezVous.as_view(), name="rendezvous"),
     path("password_reset/", password_reset.as_view(), name="password_reset"),
     path("page_utilisateur_client/", ClientProfil.as_view(), name="page_utilisateur_client"),
+    path("deconnexion/", deconnexion, name="deconnexion"),
+    path("modifier_profil/", ModifierProfilView.as_view(), name="modifier_profil"),
+    
     path('liste_operateur/<str:username>/', ModifierOperateur.as_view(), name='detail_operateur'),
     path('liste_clients/<str:username>/', ModifierCLient.as_view(), name='detail_client'),
 
