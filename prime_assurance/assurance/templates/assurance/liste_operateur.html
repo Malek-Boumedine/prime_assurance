@@ -1,20 +1,48 @@
 {% extends "base.html" %}
 
-{% block title %}Liste des opérateurs{% endblock%}
+{% block title %}Liste des opérateurs{% endblock %}
 
-{%block content%}
-    <h2>Liste des opérateurs </h2>
-    <form method="get" action=''>
-        <input type="text" name ="q" placeholder = "Rechercher un opérateur" value="{{ request.GET.q }}">
-        <button type = "submit">Rechercher</button>
-    </form>
+{% block content %}
+    <h2>Liste des opérateurs</h2>
     
-    <ul>
-        {% for operateur in operateurs %}
-        <li>
-            <p><strong> {{operateur.username}}</strong> - {{operateur.first_name}} {{operateur.last_name}}</p>
-            <p>{{operateur.anciennete}} ans d'anciennete - {{operateur.poste}}</p>
-        </li>
-    {% endfor %}
-    </ul>
+    <form method="get" action="">
+        <input type="text" name="q" placeholder="Rechercher un opérateur" value="{{ request.GET.q }}">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom d'utilisateur</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Ancienneté</th>
+                <th>Poste</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for operateur in operateurs %}
+                <tr>
+                    <td>{{ operateur.username }}</td>
+                    <td>{{ operateur.first_name }}</td>
+                    <td>{{ operateur.last_name }}</td>
+                    <td>{{ operateur.anciennete }} ans</td>
+                    <td>{{ operateur.poste }}</td>
+                    <td>
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <input type="hidden" name="username" value="{{ operateur.username }}">
+                            <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet opérateur ?')">Supprimer</button>
+
+
+                        <a href="{% url 'detail_operateur' username=operateur.username %}">
+                            <button type="button">Modifier</button>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock %}

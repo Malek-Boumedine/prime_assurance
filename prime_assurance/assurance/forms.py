@@ -47,6 +47,11 @@ class OperateurForm(ModelForm):
         
         return user
 
+class OperateurModification(ModelForm):
+
+    model = User
+    fields = ['first_name','last_name','sexe','username','email','date_de_naissance','telephone','poste']
+    
 #region Formulaire client
 
 class ClientForm(ModelForm):
@@ -72,8 +77,8 @@ class ClientForm(ModelForm):
             password = self.cleaned_data['password']
             user.set_password(password)  # Utilise le hashage sécurisé de Django
             user.age = datetime.now().year - user.date_de_naissance.year
-            user.is_client = False      
-            user.is_prospect = True
+            user.is_client = True    
+            user.is_prospect = False
 
             # #faire un dataframe pour model
             df_pour_model = pd.DataFrame([[user.age, user.sexe,user.imc,user.nombre_enfant,user.statut_fumeur,user.region]], columns=['age','sex','bmi','children','smoker','region'])
@@ -104,6 +109,9 @@ class DevisForm(ClientForm):
     class Meta(ClientForm.Meta):
         model = User
         fields = ['last_name', 'first_name', 'email', 'telephone', 'date_de_naissance', 'sexe', 'taille', 'poids', 'nombre_enfant', 'statut_fumeur', 'region']
+        widgets = {
+            'date_de_naissance': forms.DateInput(attrs={'type': 'date'})
+        }
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -122,6 +130,9 @@ class ProspectForm(ClientForm):
     class Meta:
         model = User
         fields = ['first_name','last_name','username','sexe','region','statut_fumeur','nombre_enfant','password','email','date_de_naissance','telephone','poids','taille']
+        widgets = {
+            'date_de_naissance': forms.DateInput(attrs={'type': 'date'})
+        }
 
     def save(self, commit=True):
         # Récupérer l'instance de l'utilisateur avant d'ajouter le hachage
@@ -149,6 +160,7 @@ class ProspectForm(ClientForm):
             user.save()
         
         return user
+    
 
 
 

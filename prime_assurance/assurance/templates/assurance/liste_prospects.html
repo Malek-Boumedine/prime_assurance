@@ -1,19 +1,64 @@
 {% extends "base.html" %}
 
-{% block title %}Liste des prospects{% endblock%}
+{% block title %}Liste des prospects{% endblock %}
 
-{%block content%}
-    <h2>Liste des prospects </h2>
-    <form method="get" action=''>
-        <input type="text" name ="q" placeholder = "Rechercher un prospect" value="{{ request.GET.q }}">
-        <button type = "submit">Rechercher</button>
-    </form>
+{% block content %}
+    <h2>Liste des prospects</h2>
     
-    <ul>
-        {% for prospect in prospects %}
-        <li>
-            <p><strong> {{prospect.username}}</strong> - {{prospect.first_name}} {{prospect.last_name}}</p>
-        </li>
-    {% endfor %}
-    </ul>
+    <form method="get" action="">
+        <input type="text" name="q" placeholder="Rechercher un prospect" value="{{ request.GET.q }}">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom d'utilisateur</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Date de naissance</th>
+                <th>Âge</th>
+                <th>IMC</th>
+                <th>Téléphone</th>
+                <th>Email</th>
+                <th>Statut fumeur</th>
+                <th>Nombre d'enfants</th>
+                <th>Région</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prospect in prospects %}
+                <tr>
+                    <td>{{ prospect.username }}</td>
+                    <td>{{ prospect.first_name }}</td>
+                    <td>{{ prospect.last_name }}</td>
+                    <td>{{ prospect.date_de_naissance }}</td>
+                    <td>{{ prospect.age }}</td>
+                    <td>{{ prospect.imc }}</td>
+                    <td>{{ prospect.telephone }}</td>
+                    <td>{{ prospect.email }}</td>
+                    <td>{% if prospect.statut_fumeur %}Oui{% else %}Non{% endif %}</td>
+                    <td>{{ prospect.nombre_enfant }}</td>
+                    <td>{{ prospect.region }}</td>
+                    <td>
+                        <!-- Formulaire de suppression -->
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <input type="hidden" name="username_delete" value="{{ prospect.username }}">
+                            <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce prospect ?')">Supprimer</button>
+                        </form>
+                        
+                        <!-- Formulaire de souscription -->
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <input type="hidden" name="username_client" value="{{ prospect.username }}">
+                            <button type="submit" onclick="return confirm('Voulez-vous valider le passage à client ?')">Souscrire le client</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock %}
