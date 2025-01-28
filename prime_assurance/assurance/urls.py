@@ -1,6 +1,5 @@
 from django.urls import path, include
-from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect, RendezVous, password_reset, ClientProfil, deconnexion, ModifierProfilView
-from django.views.generic import TemplateView
+from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect, RendezVous, password_reset, ClientProfil, deconnexion, ModifierProfilView, ModifierOperateur, ModifierCLient
 
 
 
@@ -27,4 +26,7 @@ urlpatterns = [
     path("deconnexion/", deconnexion, name="deconnexion"),
     path("modifier_profil/", ModifierProfilView.as_view(), name="modifier_profil"),
     
+    path('liste_operateur/<str:username>/', ModifierOperateur.as_view(), name='detail_operateur'),
+    path('liste_clients/<str:username>/', ModifierCLient.as_view(), name='detail_client'),
+
 ]

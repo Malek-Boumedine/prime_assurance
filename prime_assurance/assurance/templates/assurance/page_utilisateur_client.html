@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
+
 {% block title %}page client{% endblock%}
 
 {% block content %}
@@ -25,7 +26,7 @@
                         <span class="absolute right-0 m-3 h-3 w-3 rounded-full bg-green-500 ring-2 ring-green-300 ring-offset-2"></span>
                         {% if client.sexe == 'female' %}
                             {% if client.is_client %}
-                                <img src="{% static 'images/homme2.jpg' %}?v=1" alt="" class="mx-auto h-auto w-full rounded-full shadow-lg" />
+                                <img src="{% static 'images/femme2.jpg' %}?v=1" alt="" class="mx-auto h-auto w-full rounded-full shadow-lg" />
                             {% elif client.is_prospect %}
                                 <img class="mx-auto h-auto w-full rounded-full shadow-lg" src="{% static 'images/femme1.jpg' %}" alt="" />
                             {% endif %}

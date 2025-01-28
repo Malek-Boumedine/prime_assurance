@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from django.views.generic import View, ListView, TemplateView, DetailView
+from django.views.generic import View, ListView, TemplateView, DetailView, UpdateView
 from .models import Prediction, User
 from django.views.generic.edit import CreateView, UpdateView
 from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm, ModifierProfilForm
@@ -137,11 +137,42 @@ class ListeOperateurs(ListView):
     def get_queryset(self):
         return User.objects.filter(is_operateur = 1)
     
+    def post(self, request):
+        username = request.POST.get('username')
+
+        if username:
+            opetateur = User.objects.filter(username = username).first()
+            
+            if opetateur:
+                opetateur.delete()
+
+                return redirect('liste_operateurs')
+    
 class EnregistrerOperateur(CreateView):
     model = User
     form_class = OperateurForm
     template_name = 'assurance/enregistrer_operateur.html'
-    success_url = reverse_lazy('liste_operateur')
+    success_url = reverse_lazy('liste_operateurs')
+
+class ModifierOperateur(View):
+    def get(self, request, username):
+        # Récupérer l'opérateur à partir de l'username
+        operateur = User.objects.get(username=username)
+        form = OperateurForm(instance=operateur)
+        return render(request, 'assurance/detail_operateur.html', {'form': form, 'operateur': operateur})
+
+    def post(self, request, username):
+        # Récupérer l'opérateur à partir de l'username
+        operateur = User.objects.get(username=username)
+        form = OperateurForm(request.POST, instance=operateur)
+
+        if form.is_valid():
+            form.save()  # Sauvegarder les données modifiées
+            return redirect('liste_operateur/')  # Rediriger vers la liste des opérateurs
+
+        return render(request, 'assurance/detail_operateur.html', {'form': form, 'operateur': operateur})
+    
+
 
 #region clients
     
@@ -152,6 +183,17 @@ class ListeClients(ListView):
 
     def get_queryset(self):
         return User.objects.filter(is_client = 1)
+    
+    def post(self, request):
+        username = request.POST.get('username')
+
+        if username:
+            client = User.objects.filter(username = username).first()
+            
+            if client:
+                client.delete()
+
+                return redirect('liste_clients')
 
 class EnregistrerClient(CreateView):
     model = User
@@ -159,6 +201,24 @@ class EnregistrerClient(CreateView):
     template_name = 'assurance/enregistrer_client.html'
     success_url = reverse_lazy('liste_clients')
     
+
+class ModifierCLient(View):
+    def get(self, request, username):
+        client = User.objects.get(username=username)
+        form = ClientForm(instance=client)
+        return render(request, 'assurance/detail_client.html', {'form': form, 'client': client})
+
+    def post(self, request, username):
+        client = User.objects.get(username=username)
+        form = ClientForm(request.POST, instance=client)
+
+        if form.is_valid():
+            form.save()  
+            return redirect('liste_clients/')  
+
+        return render(request, 'assurance/detail_client.html', {'form': form, 'client': client})
+
+
 
 # region Prospect
 
@@ -176,6 +236,39 @@ class ListeProspects(ListView):
 
     def get_queryset(self):
         return User.objects.filter(is_prospect = 1)
+    
+    def post(self, request):
+       
+        username_delete = request.POST.get('username_delete')
+        print(request.POST)
+
+        if username_delete:
+            prospect = User.objects.filter(username = username_delete).first()
+            
+            if prospect:
+                prospect.delete()
+
+                
+
+        username_client = request.POST.get('username_client')
+
+        if username_client:
+            prospect = User.objects.filter(username = username_client).first()
+            
+            if prospect:
+                prospect.is_prospect = False
+                prospect.is_client = True
+                prospect.save()
+            
+
+
+        return redirect('liste_prospects')
+
+
+
+
+
+# region Page profil
 
 class ClientProfil(ListView):
     model = User 
