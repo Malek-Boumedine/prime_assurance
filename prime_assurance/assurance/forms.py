@@ -6,28 +6,30 @@ import joblib
 import pandas as pd
 from datetime import datetime
 import cloudpickle
+from django.conf import settings
+import os
 
-# from .model_pred import AgeTransformer, BmiTransformer
 
-#region ouverture du modèle
 
-with open('assurance/best_lasso_model.pkl', 'rb') as file:
+
+with open('assurance/basic_linreg_model.pkl', 'rb') as file:
     model_pred = cloudpickle.load(file)
 
-#region Login form
+
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150, label='Nom d’utilisateur')
     password = forms.CharField(max_length=150, widget=forms.PasswordInput, label='Mot de passe')
 
 
-#region Formulaire opérateur
-
 class OperateurForm(ModelForm):
+    
+    sexe = forms.ChoiceField(required=True, choices=[('male', 'Homme'), ('female', 'Femme')])
+    region = forms.ChoiceField(required=True, choices=[('northwest', 'Northwest'), ('northeast', 'Northeast'), ('southwest', 'Southwest'), ('southeast', 'Southeast')])
+    poste = forms.ChoiceField(required=True, choices=[('courtier', 'Courtier'), ('manager', 'Manager')])
 
     class Meta:
         model = User
         fields = ['first_name','last_name','sexe','username','password','email','date_de_naissance','telephone','anciennete','poste']
-
 
     def save(self, commit=True):
         # Récupérer l'instance de l'utilisateur avant d'ajouter le hachage
@@ -47,9 +49,23 @@ class OperateurForm(ModelForm):
         
         return user
 
+class ModifierProfilForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','sexe','region','statut_fumeur','nombre_enfant','email','date_de_naissance','telephone','poids','taille']
+
+class OperateurModification(ModelForm):
+
+    model = User
+    fields = ['first_name','last_name','sexe','username','email','date_de_naissance','telephone','poste']
+    
 #region Formulaire client
 
 class ClientForm(ModelForm):
+    sexe = forms.ChoiceField(required=True, choices=[('male', 'Homme'), ('female', 'Femme')])
+    region = forms.ChoiceField(required=True, choices=[('northwest', 'Northwest'), ('northeast', 'Northeast'), ('southwest', 'Southwest'), ('southeast', 'Southeast')])
+    statut_fumeur = forms.ChoiceField(choices=[('yes', 'Oui'), ('no', 'Non')])
+
 
     class Meta:
         model = User
@@ -72,8 +88,8 @@ class ClientForm(ModelForm):
             password = self.cleaned_data['password']
             user.set_password(password)  # Utilise le hashage sécurisé de Django
             user.age = datetime.now().year - user.date_de_naissance.year
-            user.is_client = False      
-            user.is_prospect = True
+            user.is_client = True    
+            user.is_prospect = False
 
             # #faire un dataframe pour model
             df_pour_model = pd.DataFrame([[user.age, user.sexe,user.imc,user.nombre_enfant,user.statut_fumeur,user.region]], columns=['age','sex','bmi','children','smoker','region'])
@@ -86,7 +102,6 @@ class ClientForm(ModelForm):
             print(charge)
             print(charge[0])
             user.charges = charge[0]
-
         
         # Sauvegarder l'utilisateur
         if commit:
@@ -94,34 +109,44 @@ class ClientForm(ModelForm):
         
         return user
 
-from django.conf import settings
-import joblib
-import pandas as pd
-import os
-
 
 class DevisForm(ClientForm):
     class Meta(ClientForm.Meta):
         model = User
         fields = ['last_name', 'first_name', 'email', 'telephone', 'date_de_naissance', 'sexe', 'taille', 'poids', 'nombre_enfant', 'statut_fumeur', 'region']
+        widgets = {
+            'date_de_naissance': forms.DateInput(attrs={'type': 'date'})
+        }
 
-    def save(self, commit=True):
+    def calculer(self):
         user = super().save(commit=False)
-        # model = joblib.load("prime_assurance/assurance/complete_pipeline.pkl")
-        model_path = os.path.join(settings.BASE_DIR, 'static', 'model', 'complete_pipeline.pkl')
-        model = joblib.load(model_path)
-        df_pour_model = pd.DataFrame([[user.age, user.sexe,user.imc,user.nombre_enfant,user.statut_fumeur,user.region]], columns=['age','sex','bmi','children','smoker','region'])
-        user.charge = model.predict(df_pour_model)[0]
-        print(user.charge)
 
+        if user.poids and user.taille:
+            user.imc = user.poids / ((user.taille/100) ** 2)
+            
+        if user.date_de_naissance:
+            user.age = datetime.now().year - user.date_de_naissance.year
+        
+        df_pour_model = pd.DataFrame([[user.age, user.sexe, user.imc, user.nombre_enfant, user.statut_fumeur, user.region]], columns=['age', 'sex', 'bmi', 'children', 'smoker', 'region'])
+
+        try:
+            with open('assurance/basic_linreg_model.pkl', 'rb') as file:
+                model = cloudpickle.load(file)
+            montant = model.predict(df_pour_model)[0]
+            return montant
+        except Exception as e:
+            print(f"Erreur lors du calcul : {e}")
+            return None
 
 
 class ProspectForm(ClientForm):
 
-
     class Meta:
         model = User
         fields = ['first_name','last_name','username','sexe','region','statut_fumeur','nombre_enfant','password','email','date_de_naissance','telephone','poids','taille']
+        widgets = {
+            'date_de_naissance': forms.DateInput(attrs={'type': 'date'})
+        }
 
     def save(self, commit=True):
         # Récupérer l'instance de l'utilisateur avant d'ajouter le hachage
@@ -149,6 +174,7 @@ class ProspectForm(ClientForm):
             user.save()
         
         return user
+    
 
 
 
