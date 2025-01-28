@@ -10,7 +10,9 @@ urlpatterns = [
     path('liste_operateur/', ListeOperateurs.as_view(), name='liste_operateurs'),
     path('liste_clients/', ListeClients.as_view(), name='liste_clients'),
     path('liste_prospects/', ListeProspects.as_view(), name='liste_prospects'),
-
+    path('liste_prospects_tableau/', ListeProspects.as_view(), name='liste_prospects'),
+    path('liste_clients_tableau/', ListeClients.as_view(), name='liste_clients'),
+    path('liste_operateurs_tableau/', ListeOperateurs.as_view(), name='liste_operateurs'),
     path('nouveloperateur/', EnregistrerOperateur.as_view(), name = 'enregistrer_operateur'),
     path('nouveauclient/', EnregistrerClient.as_view(), name = 'enregistrer_client'),
     path('nouveauprospect/', EnregistrerProspect.as_view(), name = 'enregistrer_prospect'),
