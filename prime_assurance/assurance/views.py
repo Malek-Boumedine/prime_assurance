@@ -97,11 +97,14 @@ class DevisView(View):
     def get(self, request):
         form = DevisForm()
         return render(request, self.template_name, {"form": form})
-
+    
     def post(self, request):
         form = DevisForm(request.POST)
         if form.is_valid():
             montant = form.calculer()
+            # Créer et sauvegarder la prédiction
+            prediction = Prediction(nom=form.cleaned_data['last_name'], prenom=form.cleaned_data['first_name'], email=form.cleaned_data['email'], telephone=form.cleaned_data['telephone'], montant_charges=montant)
+            prediction.save()
             messages.success(request, f"Le montant estimé de votre assurance est de {montant:.2f} €")
             return render(request, self.template_name, {'form': form})
         return render(request, self.template_name, {'form': form})

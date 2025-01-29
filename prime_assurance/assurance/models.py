@@ -46,6 +46,10 @@ class User(AbstractUser):
 
 
 class Prediction(models.Model):
-    id_prospect = models.ForeignKey(User, on_delete=models.CASCADE) # ne pas oublier d'enlever les quotes
+    nom = models.CharField(max_length=150, null=True)
+    prenom = models.CharField(max_length=150, null=True)
+    email = models.EmailField(null=True)
+    telephone = models.CharField( max_length=10,null = True)
     montant_charges = models.FloatField(default=0)
     date_devis = models.DateField(auto_now=False, auto_now_add=True)
+    

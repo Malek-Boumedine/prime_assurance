@@ -72,6 +72,7 @@ class RendezVousForm(forms.ModelForm):
             instance.save()
         return instance    
 
+
 class OperateurForm(ModelForm):
 
     sexe = forms.ChoiceField(required=True, choices=[('male', 'Homme'), ('female', 'Femme')])
@@ -99,6 +100,7 @@ class OperateurForm(ModelForm):
             user.save()
         
         return user
+
 
 class ModifierProfilForm(ModelForm):
     class Meta:
@@ -172,6 +174,8 @@ class ClientForm(ModelForm):
     
 
 class DevisForm(ClientForm):
+    password = None
+    confirm_password = None
     class Meta(ClientForm.Meta):
         model = User
         fields = ['last_name', 'first_name', 'email', 'telephone', 'date_de_naissance', 'sexe', 'taille', 'poids', 'nombre_enfant', 'statut_fumeur', 'region']
