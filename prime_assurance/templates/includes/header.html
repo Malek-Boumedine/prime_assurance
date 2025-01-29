@@ -15,6 +15,15 @@
             {% if user.is_authenticated %}
               <li><a href="{% url 'rendezvous' %}" class="font-medium tracking-wide text-gray-100 transition-colors duration-200 hover:text-teal-accent-400">Prendre un rendez-vous</a></li>
             {% endif %}
+            
+            {% if user.poste == 'manager' or user.poste == 'courtier' or user.is_superuser %}
+              <li><a href="{% url 'liste_prospects' %}" class="font-medium tracking-wide text-gray-100 transition-colors duration-200 hover:text-teal-accent-400">Liste des prospects</a></li>
+              <li><a href="{% url 'liste_clients' %}" class="font-medium tracking-wide text-gray-100 transition-colors duration-200 hover:text-teal-accent-400">Liste des clients</a></li>
+            {% endif %}
+
+            {% if user.poste == 'manager' or user.is_superuser %}
+              <li><a href="{% url 'liste_operateurs' %}" class="font-medium tracking-wide text-gray-100 transition-colors duration-200 hover:text-teal-accent-400">Liste des opérateurs</a></li>
+            {% endif %}
           </ul>
         </div>
         <ul class="flex items-center hidden space-x-8 lg:flex">
@@ -63,9 +72,16 @@
                   {% if user.is_authenticated %}
                     <li><a href="{% url 'rendezvous' %}" class="font-medium tracking-wide text-gray-100">Prendre un rendez-vous</a></li>
                   {% endif %}
+                  {% if user.poste == 'manager' or user.poste == 'courtier' or user.is_superuser %}
+                    <li><a href="{% url 'liste_prospects' %}" class="font-medium tracking-wide text-gray-100">Liste des prospects</a></li>
+                    <li><a href="{% url 'liste_clients' %}" class="font-medium tracking-wide text-gray-100">Liste des clients</a></li>
+                  {% endif %}
+                  {% if user.poste == 'manager' or user.is_superuser %}
+                    <li><a href="{% url 'liste_operateurs' %}" class="font-medium tracking-wide text-gray-100">Liste des opérateurs</a></li>
+                  {% endif %}
                   {% if not user.is_authenticated %}
-                  <li><a href="{% url 'authentification' %}" class="font-medium tracking-wide text-gray-100">Connexion</a></li>
-                  <li><a href="{% url 'inscription' %}" class="font-medium tracking-wide text-gray-100">Inscription</a></li>
+                    <li><a href="{% url 'authentification' %}" class="font-medium tracking-wide text-gray-100">Connexion</a></li>
+                    <li><a href="{% url 'inscription' %}" class="font-medium tracking-wide text-gray-100">Inscription</a></li>
                   {% else %}
                     <li><a href="{% url 'page_utilisateur_client' %}" class="font-medium tracking-wide text-gray-100">Profil</a></li>
                     <li><a href="{% url 'deconnexion' %}" class="font-medium tracking-wide text-gray-100">Déconnexion</a></li>

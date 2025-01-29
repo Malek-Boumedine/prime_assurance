@@ -62,11 +62,11 @@ class InscriptionView(View):
     success_url = reverse_lazy('accueil')
 
     def get(self, request):
-        form = ClientForm()
+        form = ProspectForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        form = ClientForm(request.POST)
+        form = ProspectForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect(self.success_url)
@@ -131,7 +131,7 @@ class RendezVous(View) :
 
 class ListeOperateurs(ListView):
     model = User
-    template_name = "assurance/liste_operateur.html"
+    template_name = "assurance/liste_operateurs_tableau.html"
     context_object_name = "operateurs"
 
     def get_queryset(self):
@@ -146,7 +146,7 @@ class ListeOperateurs(ListView):
             if opetateur:
                 opetateur.delete()
 
-                return redirect('liste_operateurs')
+                return redirect('/liste_operateurs_tableau')
     
 class EnregistrerOperateur(CreateView):
     model = User
@@ -168,7 +168,7 @@ class ModifierOperateur(View):
 
         if form.is_valid():
             form.save()  # Sauvegarder les données modifiées
-            return redirect('liste_operateur/')  # Rediriger vers la liste des opérateurs
+            return redirect('/liste_operateurs_tableau/')  # Rediriger vers la liste des opérateurs
 
         return render(request, 'assurance/detail_operateur.html', {'form': form, 'operateur': operateur})
     
@@ -178,7 +178,7 @@ class ModifierOperateur(View):
     
 class ListeClients(ListView):
     model = User
-    template_name = 'assurance/liste_clients.html'
+    template_name = 'assurance/liste_clients_tableau.html'
     context_object_name = 'clients'
 
     def get_queryset(self):
@@ -193,7 +193,7 @@ class ListeClients(ListView):
             if client:
                 client.delete()
 
-                return redirect('liste_clients')
+                return redirect('/liste_clients_tableau')
 
 class EnregistrerClient(CreateView):
     model = User
@@ -214,7 +214,7 @@ class ModifierCLient(View):
 
         if form.is_valid():
             form.save()  
-            return redirect('liste_clients/')  
+            return redirect('/liste_clients_tableau/')  
 
         return render(request, 'assurance/detail_client.html', {'form': form, 'client': client})
 
@@ -231,7 +231,7 @@ class EnregistrerProspect(CreateView):
 
 class ListeProspects(ListView):
     model = User
-    template_name = 'assurance/liste_prospects.html'
+    template_name = 'assurance/liste_prospects_tableau.html'
     context_object_name = 'prospects'
 
     def get_queryset(self):
@@ -262,7 +262,23 @@ class ListeProspects(ListView):
             
 
 
-        return redirect('liste_prospects')
+        return redirect('/liste_prospects_tableau')
+    
+class ModifierProspect(View):
+    def get(self, request, username):
+        prospect = User.objects.get(username=username)
+        form = ProspectForm(instance=prospect)
+        return render(request, 'assurance/detail_prospect.html', {'form': form, 'prospect': prospect})
+
+    def post(self, request, username):
+        prospect = User.objects.get(username=username)
+        form = ProspectForm(request.POST, instance=prospect)
+
+        if form.is_valid():
+            form.save()  
+            return redirect('/liste_prospects_tableau/')  
+
+        return render(request, 'assurance/detail_prospect.html', {'form': form, 'prospect': prospect})
 
 
 

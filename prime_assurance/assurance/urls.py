@@ -5,12 +5,10 @@ from .views import AccueilView, AuthentificationView, CouvertureView, DevisView,
 
 
 urlpatterns = [
-    path("", AccueilView.as_view(), name="home"),  # Ajout pour gérer l'URL racine
-
-    path('liste_operateur/', ListeOperateurs.as_view(), name='liste_operateurs'),
-    path('liste_clients/', ListeClients.as_view(), name='liste_clients'),
-    path('liste_prospects/', ListeProspects.as_view(), name='liste_prospects'),
-
+    path("", AccueilView.as_view(), name="home"),
+    path('liste_prospects_tableau/', ListeProspects.as_view(), name='liste_prospects'),
+    path('liste_clients_tableau/', ListeClients.as_view(), name='liste_clients'),
+    path('liste_operateurs_tableau/', ListeOperateurs.as_view(), name='liste_operateurs'),
     path('nouveloperateur/', EnregistrerOperateur.as_view(), name = 'enregistrer_operateur'),
     path('nouveauclient/', EnregistrerClient.as_view(), name = 'enregistrer_client'),
     path('nouveauprospect/', EnregistrerProspect.as_view(), name = 'enregistrer_prospect'),
@@ -28,5 +26,6 @@ urlpatterns = [
     
     path('liste_operateur/<str:username>/', ModifierOperateur.as_view(), name='detail_operateur'),
     path('liste_clients/<str:username>/', ModifierCLient.as_view(), name='detail_client'),
+    path('liste_prospects/<str:username>/', ModifierCLient.as_view(), name='detail_prospect'),
 
 ]
