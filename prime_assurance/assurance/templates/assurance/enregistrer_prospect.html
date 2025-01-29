@@ -3,12 +3,12 @@
 {% load static %}
 
 {% block content %}
-  {% if user.poste == 'Manager' or if user.poste == 'Courtier' or user.is_superuser%}
+  {% if user.poste == 'Manager' or user.poste == 'Courtier' or user.is_superuser %}
 
   <section class="text-gray-600 body-font">
     <div class="container px-5 py-24 mx-auto">
       <div class="flex flex-col items-center">
-        <h2 class="text-2xl font-medium title-font mb-8 text-gray-900">Créer un compte</h2>
+        <h2 class="text-2xl font-medium title-font mb-8 text-gray-900">Créer un compte prospect</h2>
         <div class="lg:w-1/2 md:w-2/3 w-full">
           <form method="post" class="bg-white p-8 rounded-lg shadow-md">
             {% csrf_token %}

@@ -1,12 +1,9 @@
-
-
 {% extends 'base.html' %}
 {% load static %}
 {% load widget_tweaks %} 
 
 {% block content %}
     {% if user.poste == 'Manager' or user.is_superuser%}
-
         <div class="max-w-2xl mx-auto p-6">
             <h2 class="text-2xl font-bold mb-6 text-center">Modifier Opérateur</h2>
             <form method="POST">

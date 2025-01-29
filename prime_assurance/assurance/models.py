@@ -4,14 +4,37 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from datetime import datetime
+
 
 
 # Create your models here.
 
+class User(AbstractUser):
+    first_name = models.CharField("Prénom", max_length=150, blank=True)
+    last_name = models.CharField("Nom", max_length=150, blank=True)
+    date_de_naissance = models.DateField(null = True, default='1970-01-01')
+    age = models.IntegerField(null=True, default=0)
+    telephone = models.CharField( max_length=10,null = True, default=0000000000)
+    nombre_enfant = models.IntegerField(null=True, default=0)
+    poids = models.IntegerField(null = True, default=0)
+    taille = models.IntegerField(null = True, default=0)
+    imc = models.FloatField(null = True, default=0)
+    sexe = models.CharField(max_length=50, null = True, default=0)
+    region = models.CharField(max_length=100, null = True, default=0)
+    statut_fumeur = models.CharField(max_length=10, null = True, default=0)
+    date_souscription = models.DateTimeField(auto_now=False,null = True)
+    anciennete = models.IntegerField(default=0, null = True)
+    poste = models.CharField(max_length=100, null = True, default="Courtier")
+    charges = models.FloatField(null=True, default=0)
+    is_operateur = models.BooleanField(null = True, default=0)
+    is_client = models.BooleanField(null = True, default=0)
+    is_prospect = models.BooleanField(null = True, default=0)
+
 
 class RendezVous(models.Model):
-    nom = models.CharField(max_length=150, null=True)
     prenom = models.CharField(max_length=150, null=True)
+    nom = models.CharField(max_length=150, null=True)
     motif = models.CharField(max_length=100, null=True)
     operateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, limit_choices_to={'is_operateur': True})
     date_heure = models.DateTimeField(null=True)
@@ -23,26 +46,6 @@ class RendezVous(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['operateur', 'date_heure'], name='unique_rdv_operateur')]
-  
-
-class User(AbstractUser):
-    date_de_naissance = models.DateField(null = True)
-    age = models.IntegerField(null=True)
-    telephone = models.CharField( max_length=10,null = True)
-    nombre_enfant = models.IntegerField(null=True)
-    poids = models.IntegerField(null = True)
-    taille = models.IntegerField(null = True)
-    imc = models.FloatField(null = True) 
-    sexe = models.CharField(max_length=50, null = True)
-    region = models.CharField(max_length=100, null = True)
-    statut_fumeur = models.CharField(max_length=10, null = True)
-    date_souscription = models.DateTimeField(auto_now=False,null = True)
-    anciennete = models.IntegerField(default=0, null = True)
-    poste = models.CharField(max_length=100, null = True)
-    charges = models.FloatField(null=True)
-    is_operateur = models.BooleanField(null = True)
-    is_client = models.BooleanField(null = True)
-    is_prospect = models.BooleanField(null = True)
 
 
 class Prediction(models.Model):

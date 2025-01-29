@@ -3,7 +3,13 @@
 {%block content %}
     {% if user.poste == 'Manager' or user.is_superuser%}
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h2 class="text-2xl font-bold mb-4">base de données opérateurs</h2>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold mb-4">base de données opérateurs</h2>
+                <a href="{% url 'enregistrer_operateur' %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Ajouter un opérateur
+                </a>
+            </div>
+
             <table id="example" class="table-auto w-full">
                 <thead>
                     <tr>
@@ -11,7 +17,6 @@
                         <th class="px-4 py-2">Prénom</th>
                         <th class="px-4 py-2">Nom</th>
                         <th class="px-4 py-2">Date de naissance</th>
-                        <th class="px-4 py-2">Âge</th>
                         <th class="px-4 py-2">Téléphone</th>
                         <th class="px-4 py-2">Email</th>
                         <th class="px-4 py-2">poste</th>
@@ -27,7 +32,6 @@
                         <td class="border px-4 py-2">{{ operateur.first_name }}</td>
                         <td class="border px-4 py-2">{{ operateur.last_name }}</td>
                         <td class="border px-4 py-2">{{ operateur.date_de_naissance }}</td>
-                        <td class="border px-4 py-2">{{ operateur.age }}</td>
                         <td class="border px-4 py-2">{{ operateur.telephone }}</td>
                         <td class="border px-4 py-2">{{ operateur.email }}</td>
                         <td class="border px-4 py-2">{{operateur.poste}}</td>
