@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.views.generic import View, ListView, TemplateView, DetailView, UpdateView
 from .models import Prediction, User
 from django.views.generic.edit import CreateView, UpdateView
-from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm, ModifierProfilForm
+from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm, ModifierProfilForm, RendezVousForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.views import PasswordResetView
@@ -16,8 +16,8 @@ import datetime
 
 
 
+
 # Create your views here.
-#region Operateurs
 
 class AccueilView(View) : 
     template_name = "assurance/accueil.html"
@@ -122,11 +122,22 @@ class ModifierProfilView(View):
             return redirect('page_utilisateur_client') 
 
 
-class RendezVous(View) : 
+class RendezVous(View):
     template_name = "assurance/rendezvous.html"
-    
-    def get(self, request) :
-        return render(request, self.template_name)
+
+    def get(self, request):
+        form = RendezVousForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = RendezVousForm(request.POST)
+        if form.is_valid():
+            rdv = form.save(commit=False)
+            rdv.id_client = request.user
+            rdv.save()
+            messages.success(request, "Rendez-vous enregistré avec succès !")
+            return redirect('page_utilisateur_client')
+        return render(request, self.template_name, {'form': form})
 
 
 class ListeOperateurs(ListView):
@@ -148,11 +159,13 @@ class ListeOperateurs(ListView):
 
                 return redirect('liste_operateurs')
     
+    
 class EnregistrerOperateur(CreateView):
     model = User
     form_class = OperateurForm
     template_name = 'assurance/enregistrer_operateur.html'
     success_url = reverse_lazy('liste_operateurs')
+
 
 class ModifierOperateur(View):
     def get(self, request, username):
@@ -173,9 +186,6 @@ class ModifierOperateur(View):
         return render(request, 'assurance/detail_operateur.html', {'form': form, 'operateur': operateur})
     
 
-
-#region clients
-    
 class ListeClients(ListView):
     model = User
     template_name = 'assurance/liste_clients.html'
@@ -194,6 +204,7 @@ class ListeClients(ListView):
                 client.delete()
 
                 return redirect('liste_clients')
+
 
 class EnregistrerClient(CreateView):
     model = User
@@ -218,9 +229,6 @@ class ModifierCLient(View):
 
         return render(request, 'assurance/detail_client.html', {'form': form, 'client': client})
 
-
-
-# region Prospect
 
 class EnregistrerProspect(CreateView):
     model = User
@@ -264,11 +272,6 @@ class ListeProspects(ListView):
 
         return redirect('liste_prospects')
 
-
-
-
-
-# region Page profil
 
 class ClientProfil(ListView):
     model = User 

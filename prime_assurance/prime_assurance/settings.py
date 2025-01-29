@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "assurance.apps.AssuranceConfig",
     "widget_tweaks",
-    
+    "django_apscheduler",    
 ]
 
 

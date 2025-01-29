@@ -83,6 +83,11 @@
                             <span class="ml-auto text-gray-600">{{client.poids}} kg</span>
                         </li>
                         <li class="flex items-center justify-between py-3 text-sm">
+                            <span class="font-medium">Indice de masse corporelle</span>
+                            <span class="ml-auto text-gray-600">{{client.imc|floatformat:2}} </span>
+                        </li>
+
+                        <li class="flex items-center justify-between py-3 text-sm">
                             <span class="font-medium">Fumeur</span>
                             <span class="ml-auto text-gray-600">{% if client.statut_fumeur %}Oui{% else %}Non{% endif %}</span>
                         </li>

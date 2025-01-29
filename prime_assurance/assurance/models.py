@@ -3,19 +3,29 @@ from django.core.validators import MinLengthValidator
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+
 
 # Create your models here.
 
 
 class RendezVous(models.Model):
-    Date_heure = models.DateTimeField()
-    id_client = models.ForeignKey("User", on_delete=models.SET_NULL, null=True, related_name='rdv_client')
-    id_operateur = models.ForeignKey("User", on_delete=models.SET_NULL, null=True, related_name='rdv_operateur')
-    type = models.CharField(max_length=100)
-    motif = models.CharField(max_length=100)
+    nom = models.CharField(max_length=150, null=True)
+    prenom = models.CharField(max_length=150, null=True)
+    motif = models.CharField(max_length=100, null=True)
+    operateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, limit_choices_to={'is_operateur': True})
+    date_heure = models.DateTimeField(null=True)
+    type = models.CharField(null=True, max_length=100, choices=[
+        ('physique', 'Physique'),
+        ('telephone', 'Téléphone'),
+        ('visio', 'Visio')
+    ])
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['operateur', 'date_heure'], name='unique_rdv_operateur')]
+  
 
 class User(AbstractUser):
-
     date_de_naissance = models.DateField(null = True)
     age = models.IntegerField(null=True)
     telephone = models.CharField( max_length=10,null = True)
@@ -23,7 +33,7 @@ class User(AbstractUser):
     poids = models.IntegerField(null = True)
     taille = models.IntegerField(null = True)
     imc = models.FloatField(null = True) 
-    sexe = models.CharField(max_length=50)
+    sexe = models.CharField(max_length=50, null = True)
     region = models.CharField(max_length=100, null = True)
     statut_fumeur = models.CharField(max_length=10, null = True)
     date_souscription = models.DateTimeField(auto_now=False,null = True)
