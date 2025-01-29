@@ -82,6 +82,9 @@ class OperateurForm(ModelForm):
     class Meta:
         model = User
         fields = ['first_name','last_name','sexe','username','password','email','date_de_naissance','telephone','anciennete','poste']
+        widgets = {
+            'date_de_naissance': forms.DateInput(format="%Y-%m-%d", attrs={'type': 'date'})
+        }
 
     def save(self, commit=True):
         # Récupérer l'instance de l'utilisateur avant d'ajouter le hachage
@@ -111,6 +114,12 @@ class OperateurModification(ModelForm):
 
     model = User
     fields = ['first_name','last_name','sexe','username','email','date_de_naissance','telephone','poste']
+    widgets = {
+        'date_de_naissance': forms.DateInput(format="%Y-%m-%d", attrs={'type': 'date'})
+    }
+    
+
+
     
 
 class ClientForm(ModelForm):
@@ -125,7 +134,8 @@ class ClientForm(ModelForm):
         model = User
         fields = ['first_name','last_name','username','sexe','region','statut_fumeur','nombre_enfant','password','confirm_password','email','date_de_naissance','telephone','poids','taille']
         widgets = {
-            'date_de_naissance': forms.DateInput(attrs={'type': 'date'})
+            'date_de_naissance': forms.DateInput(format="%Y-%m-%d", attrs={'type': 'date'})
+            
         }
 
     def clean(self):
