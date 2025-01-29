@@ -37,6 +37,33 @@
     </div>
   </div>
 </section>
+
+<div class="flex flex-wrap justify-center items-center h-auto p-5 pl-[6%] pt-[9%]">
+  <div class="w-full md:w-2/5 p-4">
+    <h2 class="text-xl md:text-7xl font-semibold mb-5">Ecrivez nous !</h2>
+    <form class="space-y-4">
+      <div>
+        <input type="text" id="fullName" name="fullName" placeholder='Nom complet' class="mt-1 p-4 w-full border rounded-md" />
+      </div>
+      <div>
+        <input type="email" id="email" name="email" placeholder='Email' class="mt-1 p-4 w-full border rounded-md" />
+      </div>
+      <div>
+        <textarea id="message" name="message" placeholder='Message' class="mt-1 p-4 w-full border rounded-md" rows="4"></textarea>
+      </div>
+      <button type="submit" class="px-8 py-4 bg-black text-white hover:bg-blue-700">Submit</button>
+    </form>
+  </div>
+  <div class="w-full md:w-1/2 p-4 flex justify-center">
+    <div class="rounded-full overflow-hidden w-[35rem] h-[35rem]">
+      <iframe
+        class="w-[35rem] h-[35rem]"
+        src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=47%20rue%20bartelemy%20delespaul%2059000%20lille+(assur'aimant)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+        allowFullScreen=""
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      ></iframe>
+    </div>
+  </div>
+</div>
 {% endblock %}
-
-
