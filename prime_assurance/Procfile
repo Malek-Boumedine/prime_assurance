@@ -1,1 +1,1 @@
-web: cd prime_assurance && gunicorn prime_assurance.wsgi
+web: gunicorn votre_projet.wsgi --log-file -
