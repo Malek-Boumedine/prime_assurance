@@ -1,5 +1,7 @@
 from django.urls import path, include
-from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect, RendezVousView, password_reset, ClientProfil, deconnexion, ModifierProfilView, ModifierOperateur, ModifierCLient, ListeRendezVous, ListePredictions, ModifierPasswordView
+from .views import AccueilView, AuthentificationView, CouvertureView, DevisView, InscriptionView, ListeOperateurs, EnregistrerOperateur, ListeClients, EnregistrerClient, ListeProspects, EnregistrerProspect, RendezVousView, ClientProfil, deconnexion, ModifierProfilView, ModifierOperateur, ModifierCLient, ListeRendezVous, ListePredictions, ModifierPasswordView
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
 
 
 
@@ -21,7 +23,27 @@ urlpatterns = [
     path("devis/", DevisView.as_view(), name="devis"),
     path("inscription/", InscriptionView.as_view(), name="inscription"),
     path("rendezvous/", RendezVousView.as_view(), name="rendezvous"),
-    path("password_reset/", password_reset.as_view(), name="password_reset"),
+    
+    path('password_reset/', auth_views.PasswordResetView.as_view(
+    template_name='assurance/password_reset.html',
+    email_template_name='assurance/password_reset_email.html',
+    subject_template_name='assurance/password_reset_subject.txt',
+    success_url=reverse_lazy('password_reset_done')
+    ), name='password_reset'),
+    
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(
+    template_name='assurance/password_reset_done.html'
+    ), name='password_reset_done'),
+    
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+    template_name='assurance/password_reset_confirm.html',
+    success_url=reverse_lazy('password_reset_complete')
+    ), name='password_reset_confirm'),
+    
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
+    template_name='assurance/password_reset_complete.html'
+    ), name='password_reset_complete'),
+    
     path("page_utilisateur_client/", ClientProfil.as_view(), name="page_utilisateur_client"),
     path("deconnexion/", deconnexion, name="deconnexion"),
     path("modifier_profil/", ModifierProfilView.as_view(), name="modifier_profil"),
@@ -39,26 +61,40 @@ la navigation vers des pages spécifiques telles que l'accueil, la gestion des u
 les prédictions, les rendez-vous, ainsi que la gestion du profil utilisateur et des mots de passe.
 
 Attributs :
-    AccueilView : Vue pour la page d'accueil.
-    ListeProspects : Vue pour afficher la liste des prospects.
-    ListeClients : Vue pour afficher la liste des clients.
-    ListeOperateurs : Vue pour afficher la liste des opérateurs.
-    ListeRendezVous : Vue pour afficher la liste des rendez-vous.
-    ListePredictions : Vue pour afficher la liste des prédictions.
-    EnregistrerOperateur : Vue pour l'enregistrement d'un opérateur.
-    EnregistrerClient : Vue pour l'enregistrement d'un client.
-    EnregistrerProspect : Vue pour l'enregistrement d'un prospect.
-    AccueilView : Vue pour la page d'accueil.
-    AuthentificationView : Vue pour la page d'authentification.
-    CouvertureView : Vue pour la page de couverture d'assurance.
-    DevisView : Vue pour la page de devis.
-    InscriptionView : Vue pour la page d'inscription.
-    RendezVousView : Vue pour la page de prise de rendez-vous.
-    password_reset : Vue pour réinitialiser le mot de passe.
-    ClientProfil : Vue pour afficher le profil client.
-    deconnexion : Vue pour gérer la déconnexion de l'utilisateur.
-    ModifierProfilView : Vue pour modifier le profil de l'utilisateur.
-    ModifierPasswordView : Vue pour modifier le mot de passe de l'utilisateur.
-    ModifierOperateur : Vue pour modifier un opérateur spécifique.
-    ModifierCLient : Vue pour modifier un client ou un prospect spécifique.
+    - Gestion des utilisateurs :
+        * ListeProspects : Vue pour afficher la liste des prospects.
+        * ListeClients : Vue pour afficher la liste des clients.
+        * ListeOperateurs : Vue pour afficher la liste des opérateurs.
+        * EnregistrerOperateur : Vue pour l'enregistrement d'un opérateur.
+        * EnregistrerClient : Vue pour l'enregistrement d'un client.
+        * EnregistrerProspect : Vue pour l'enregistrement d'un prospect.
+
+    - Navigation générale :
+        * AccueilView : Vue pour la page d'accueil.
+        * AuthentificationView : Vue pour la page d'authentification.
+        * CouvertureView : Vue pour la page de couverture d'assurance.
+        * DevisView : Vue pour la page de devis.
+        * InscriptionView : Vue pour la page d'inscription.
+        * RendezVousView : Vue pour la page de prise de rendez-vous.
+
+    - Gestion des rendez-vous et des prédictions :
+        * ListeRendezVous : Vue pour afficher la liste des rendez-vous.
+        * ListePredictions : Vue pour afficher la liste des prédictions.
+
+    - Gestion des mots de passe :
+        * password_reset : Vue pour initier la réinitialisation du mot de passe.
+        * password_reset_done : Vue affichant la confirmation d'envoi de l'e-mail de réinitialisation.
+        * password_reset_confirm : Vue pour confirmer et définir un nouveau mot de passe.
+        * password_reset_complete : Vue indiquant la réussite du changement de mot de passe.
+
+    - Gestion du profil et de la connexion :
+        * ClientProfil : Vue pour afficher le profil client.
+        * ModifierProfilView : Vue pour modifier le profil de l'utilisateur.
+        * ModifierPasswordView : Vue pour modifier le mot de passe de l'utilisateur.
+        * deconnexion : Vue pour gérer la déconnexion de l'utilisateur.
+
+    - Gestion des modifications :
+        * ModifierOperateur : Vue pour modifier un opérateur spécifique.
+        * ModifierCLient : Vue pour modifier un client spécifique.
+        * ModifierCLient (détail prospect) : Vue pour modifier un prospect spécifique.
 """

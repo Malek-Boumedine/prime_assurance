@@ -147,9 +147,11 @@ Ce projet est une excellente démonstration de mes compétences en développemen
 
 ## Contact
 
-<img src="prime_assurance/static/images/logo_entreprise.png" alt="Logo de l'Entreprise" width="300" height="auto" />
+### ✉️ alghom.ia@gmail.com  
 
-
+<p align="left">
+  <img src="prime_assurance/static/images/logo_entreprise.png" alt="Logo de l'Entreprise" width="300" height="auto">
+</p>
 
 <div>
 <h4>Malek BOUMEDINE </h4>
@@ -183,3 +185,4 @@ Ce projet est une excellente démonstration de mes compétences en développemen
   <img loading="lazy" src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white">
 </a>
 </div>
+
