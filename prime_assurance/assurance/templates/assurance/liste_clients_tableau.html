@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{%block content %}
+    {% if user.is_operateur or user.is_superuser%}
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">base de données clients</h2>
+                <a href="{% url 'enregistrer_client' %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Ajouter un client
+                </a>
+            </div>
+            <table id="example" class="table-auto w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Nom d'utilisateur</th>
+                        <th class="px-4 py-2">Prénom</th>
+                        <th class="px-4 py-2">Nom</th>
+                        <th class="px-4 py-2">Date de naissance</th>
+                        <th class="px-4 py-2">Âge</th>
+                        <th class="px-4 py-2">IMC</th>
+                        <th class="px-4 py-2">Téléphone</th>
+                        <th class="px-4 py-2">Email</th>
+                        <th class="px-4 py-2">Statut fumeur</th>
+                        <th class="px-4 py-2">Nombre d'enfants</th>
+                        <th class="px-4 py-2">Région</th>
+                        <th class="px-4 py-2">charges</th>
+                        <th class="px-4 py-2 ">Actions</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td class="border px-4 py-2">{{ client.username }}</td>
+                        <td class="border px-4 py-2">{{ client.first_name }}</td>
+                        <td class="border px-4 py-2">{{ client.last_name }}</td>
+                        <td class="border px-4 py-2">{{ client.date_de_naissance }}</td>
+                        <td class="border px-4 py-2">{{ client.age }}</td>
+                        <td class="border px-4 py-2">{{ client.imc|floatformat:2 }}</td>
+                        <td class="border px-4 py-2">{{ client.telephone }}</td>
+                        <td class="border px-4 py-2">{{ client.email }}</td>
+                        <td class="border px-4 py-2">{% if client.statut_fumeur %}Oui{% else %}Non{% endif %}</td>
+                        <td class="border px-4 py-2">{{ client.nombre_enfant }}</td>
+                        <td class="border px-4 py-2">{{ client.region }}</td>
+                        <td class="border px-4 py-2">{{ client.charges|floatformat:2 }}</td>
+                        <td>
+                            <form method="post" action="">
+                                {% csrf_token %}
+                                <input type="hidden" name="username" value="{{ client.username }}">
+                                <button class = "btn btn-supprimer" type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce client ?')">Supprimer</button>
+                            </form>
+
+                            <a href="{% url 'detail_client' username=client.username %}">
+                                <button class = "btn btn-modifier" type="button">Modifier</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('#example').DataTable({
+                    // Add any customization options here
+                });
+            });
+        </script>
+    {% else %}
+        <p>Vous n'êtes pas autorisé à accéder à cette page.</p>
+    {% endif %}
+{% endblock %}
+
+
+

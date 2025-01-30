@@ -1,0 +1,73 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+ 
+body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+      color: #333;
+}
+  
+.action-btns {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #12f34a; /* Couleur orange (avertissement) */
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 200;
+    transition: background-color 0.3s ease;
+}
+.warning-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    background-color: #f31212; /* Couleur orange (avertissement) */
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 200;
+    transition: background-color 0.3s ease;
+}
+
+.modif-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    background-color: #d6e415; /* Couleur orange (avertissement) */
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    width: 200;
+    transition: background-color 0.3s ease;
+}
+
+/* Style commun à tous les boutons */
+.btn {
+    padding: 10px 20px; /* Ajuste l'espacement intérieur */
+    font-size: 16px; /* Taille de la police */
+    border-radius: 5px; /* Coins arrondis */
+    border: none; /* Supprime la bordure par défaut */
+    background-color: #4CAF50; /* Couleur de fond verte */
+    color: white; /* Couleur du texte */
+    cursor: pointer; /* Ajoute un curseur pointer */
+    width: 150px; /* Largeur fixe pour tous les boutons */
+    text-align: center; /* Texte centré */
+}
+
+/* Pour différencier les couleurs */
+.btn-modifier {
+    background-color: #babd0ee7; /* Vert pour modifier */
+}
+
+.btn-supprimer {
+    background-color: #f44336; /* Rouge pour supprimer */
+}
+
+.btn-souscrire {
+    background-color: #29da5e; /* Bleu pour souscrire */
+}

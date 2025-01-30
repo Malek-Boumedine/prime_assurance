@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if user.is_operateur or user.is_superuser %}
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold mb-4">Liste des devis</h2>
+                <a href="{% url 'devis' %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Réaliser un devis
+                </a>
+            </div>
+
+            <table id="example" class="table-auto w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Nom</th>
+                        <th class="px-4 py-2">Prénom</th>
+                        <th class="px-4 py-2">Email</th>
+                        <th class="px-4 py-2">Téléphone</th>
+                        <th class="px-4 py-2">Montant des charges</th>
+                        <th class="px-4 py-2">Date du devis</th>
+                        <th class="px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prediction in predictions %}
+                    <tr>
+                        <td class="border px-4 py-2">{{ prediction.nom }}</td>
+                        <td class="border px-4 py-2">{{ prediction.prenom }}</td>
+                        <td class="border px-4 py-2">{{ prediction.email }}</td>
+                        <td class="border px-4 py-2">{{ prediction.telephone }}</td>
+                        <td class="border px-4 py-2">{{ prediction.montant_charges|floatformat:2 }} €</td>
+                        <td class="border px-4 py-2">{{ prediction.date_devis|date:"d/m/Y" }}</td>
+                        <td class="border px-4 py-2">
+                            <form method="post" action="">
+                                {% csrf_token %}
+                                <input type="hidden" name="prediction_id" value="{{ prediction.id }}">
+                                <button class="btn btn-supprimer w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                        type="submit"
+                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce devis ?')">
+                                    Supprimer
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('#example').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                    }
+                });
+            });
+        </script>
+    {% else %}
+        <p class="text-center text-red-600 font-bold py-8">Vous n'êtes pas autorisé à accéder à cette page.</p>
+    {% endif %}
+{% endblock %}

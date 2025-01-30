@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}page client{% endblock%}
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="container px-5 mx-auto mt-4">
+            <div class="lg:w-1/2 md:w-2/3 mx-auto">
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-md text-center">
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+<div class="min-h-screen bg-gray-100 py-10">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-center">
+            <div class="w-full max-w-3xl">
+                <div class="rounded-xl border bg-white px-8 pt-8 pb-10 shadow-2xl">
+                    <!-- Photo de profil -->
+                    <div class="relative mx-auto w-36 rounded-full">
+                        <span class="absolute right-0 m-3 h-3 w-3 rounded-full bg-green-500 ring-2 ring-green-300 ring-offset-2"></span>
+                        {% if client.sexe == 'female' %}
+                            {% if client.is_client %}
+                                <img class="mx-auto h-auto w-full rounded-full shadow-lg" src="{% static 'images/femme_souscrite.jpg' %}" alt="" />
+                            {% elif client.is_prospect %}
+                                <img class="mx-auto h-auto w-full rounded-full shadow-lg" src="{% static 'images/femme1.jpg' %}" alt="" />
+                            {% endif %}
+                        {% else %}
+                            {% if client.is_client %}
+                                <img class="mx-auto h-auto w-full rounded-full shadow-lg" src="{% static 'images/homme_souscrit.jpg' %}" alt="" />
+                            {% elif client.is_prospect %}
+                                <img class="mx-auto h-auto w-full rounded-full shadow-lg" src="{% static 'images/homme1.jpg' %}" alt="" />
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <!-- Informations principales -->
+                    <h1 class="mt-4 mb-2 text-center text-2xl font-bold text-gray-900">{{client.first_name}} {{client.last_name}}</h1>
+                    <p class="text-center text-sm font-medium text-gray-500">
+                        {% if client.sexe == 'male' %}Homme{% elif client.sexe == 'female' %}Femme{% endif %}
+                    </p>
+                    <h3 class="mt-3 text-center text-lg font-semibold text-emerald-600">
+                        {% if client.is_prospect or client.is_client %}
+                            Montant annuel des charges : {{client.charges|floatformat:2}} €
+                        {% elif user.poste == 'manager' %}
+                            Manager
+                        {% elif user.poste == 'courtier' %}
+                            Courtier
+                        {% else %}
+                            Admin
+                        {% endif %}
+                    </h3>
+                    
+                    <!-- Liste des informations -->
+                    <ul class="mt-6 space-y-1 divide-y rounded-lg bg-gray-50 py-3 px-4 shadow-inner">
+                        {% if client.is_prospect or client.is_client %}
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Statut</span>
+                                <span class="ml-auto rounded-full bg-emerald-100 py-1 px-3 text-sm font-medium text-emerald-800">
+                                    {% if client.is_prospect %}Prospect{% elif client.is_client %}Client{% endif %}
+                                </span>
+                            </li>
+                        {% endif %}
+                        
+                        <!-- Informations du client -->
+                        <li class="flex items-center justify-between py-3 text-sm">
+                            <span class="font-medium">nom d'utilisateur</span>
+                            <span class="ml-auto text-gray-600">{{client.username}}</span>
+                        </li>
+                        {% if client.is_prospect or client.is_client %}
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Date de souscription</span>
+                                <span class="ml-auto text-gray-600">{{client.date_souscription}}</span>
+                        {% endif %}
+
+                        </li>
+                        <li class="flex items-center justify-between py-3 text-sm">
+                            <span class="font-medium">Date de naissance</span>
+                            <span class="ml-auto text-gray-600">{{client.date_de_naissance}}</span>
+                        </li>
+                        <li class="flex items-center justify-between py-3 text-sm">
+                            <span class="font-medium">Téléphone</span>
+                            <span class="ml-auto text-gray-600">{{client.telephone}}</span>
+                        </li>
+                        <li class="flex items-center justify-between py-3 text-sm">
+                            <span class="font-medium">Email</span>
+                            <span class="ml-auto text-gray-600">{{client.email}}</span>
+                        </li>
+                        {% if client.is_prospect or client.is_client %}
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Taille</span>
+                                <span class="ml-auto text-gray-600">{{client.taille}} cm</span>
+                            </li>
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Poids</span>
+                                <span class="ml-auto text-gray-600">{{client.poids}} kg</span>
+                            </li>
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Indice de masse corporelle</span>
+                                <span class="ml-auto text-gray-600">{{client.imc|floatformat:2}} </span>
+                            </li>
+
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Fumeur</span>
+                                <span class="ml-auto text-gray-600">{% if client.statut_fumeur %}Oui{% else %}Non{% endif %}</span>
+                            </li>
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Nombre d'enfants</span>
+                                <span class="ml-auto text-gray-600">{{client.nombre_enfant}}</span>
+                            </li>
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Région</span>
+                                <span class="ml-auto text-gray-600">{{client.region}}</span>
+                            </li>
+                        {% endif %}
+
+                    </ul>
+                </div>
+                {% if client.is_prospect %}
+                <div class="mt-8 grid grid-cols-4 md:grid-cols-4 gap-4 px-4 max-w-4xl mx-auto">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full rounded-lg bg-emerald-600 px-6 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                            Souscrire
+                        </button>
+                    </form>
+                    <a href="{% url 'modifier_profil' %}" class="w-full text-center rounded-lg bg-emerald-600 px-6 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                        Modifier profil
+                    </a>
+                    <a href="{% url 'modifier_password' %}" class="w-full text-center rounded-lg bg-emerald-600 px-6 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                        Modifier mot de passe
+                    </a>
+                    <a href="{% url 'rendezvous' %}" class="w-full text-center rounded-lg bg-emerald-600 px-6 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                        Prendre rendez-vous
+                    </a>                    
+                </div>                   
+                
+                {% elif client.is_client %}
+                <div class="mt-8 grid grid-cols-3 md:grid-cols-3 gap-4 px-4 max-w-4xl mx-auto">
+                    <a href="{% url 'modifier_profil' %}" class="w-full text-center rounded-lg bg-emerald-600 px-6 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                        Modifier profil
+                    </a>
+                    <a href="{% url 'modifier_password' %}" class="w-full text-center rounded-lg bg-emerald-600 px-6 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                        Modifier mot de passe
+                    </a>
+                    <a href="{% url 'rendezvous' %}" class="w-full text-center rounded-lg bg-emerald-600 px-6 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                        Prendre rendez-vous
+                    </a>                    
+                </div>                   
+                
+                {% else %}
+                <div class="mt-8 grid grid-cols-2 md:grid-cols-2 gap-4 px-4 max-w-4xl mx-auto">
+                    <a href="{% url 'modifier_profil' %}" class="w-full text-center rounded-lg bg-emerald-600 px-6 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                        Modifier profil
+                    </a>
+                    <a href="{% url 'modifier_password' %}" class="w-full text-center rounded-lg bg-emerald-600 px-6 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                        Modifier mot de passe
+                    </a>
+                </div>                   
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

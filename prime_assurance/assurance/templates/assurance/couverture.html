@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block content %}
+<section class="text-gray-600 body-font">
+  <div class="container px-5 py-24 mx-auto">
+    <div class="flex flex-col items-center">
+      <h2 class="text-4xl font-extrabold title-font mb-8 text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500 drop-shadow-lg">
+        Bienvenue chez Assur'Aimant
+      </h2>
+      <div class="lg:w-1/2 md:w-2/3 w-full bg-white p-10 rounded-xl shadow-2xl border border-gray-200">
+        <p class="mb-8 text-lg text-center text-gray-700 leading-relaxed">
+          Votre solution de confiance pour estimer les primes d'assurance. Chez Assur'Aimant, nous comprenons vos besoins en matière de protection et d'assurance. Notre plateforme vous permet de :
+        </p>
+        <ul class="list-disc pl-8 mb-8 text-gray-700 space-y-4">
+          <li><strong>Obtenir des estimations rapides et fiables</strong> de vos primes d'assurance.</li>
+          <li><strong>Personnaliser vos garanties</strong> en fonction de votre profil et de vos priorités.</li>
+          <li><strong>Gagner du temps</strong> grâce à une interface simple et intuitive.</li>
+        </ul>
+        <h3 class="text-2xl font-semibold text-indigo-500 mb-6 text-center">Pourquoi choisir Assur'Aimant ?</h3>
+        <ul class="list-disc pl-8 mb-8 text-gray-700 space-y-4">
+          <li>Une <strong>expertise reconnue</strong> dans le domaine de l'assurance.</li>
+          <li>Des <strong>solutions adaptées</strong> à toutes les situations, qu'il s'agisse d'individus, de familles ou d'entreprises.</li>
+          <li>Un engagement à offrir des <strong>tarifs compétitifs</strong> sans compromis sur la qualité des services.</li>
+        </ul>
+        <div class="flex items-center justify-center mt-8">
+          <a href="{% url 'devis' %}"
+             class="inline-block text-white bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-blue-500 hover:to-indigo-600 font-bold py-3 px-8 rounded-lg shadow-lg transform transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
+            DEMARRER LA SIMULATION
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
