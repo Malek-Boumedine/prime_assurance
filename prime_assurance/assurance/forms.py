@@ -7,7 +7,7 @@ import cloudpickle
 
 
 
-
+# region ouverture model
 with open('assurance/basic_linreg_model.pkl', 'rb') as file:
     model_pred = cloudpickle.load(file)
     """
@@ -22,6 +22,7 @@ with open('assurance/basic_linreg_model.pkl', 'rb') as file:
     """
 
 
+# region login
 class LoginForm(forms.Form):
     """
     Formulaire de connexion pour les utilisateurs.
@@ -37,6 +38,7 @@ class LoginForm(forms.Form):
     password = forms.CharField(max_length=150, widget=forms.PasswordInput, label='Mot de passe')
     
 
+# region rendez-vous
 class RendezVousForm(forms.ModelForm):
     """
     Formulaire pour la création ou la modification d'un rendez-vous.
@@ -134,6 +136,7 @@ class RendezVousForm(forms.ModelForm):
         return instance    
 
 
+# region opérateur
 class OperateurForm(ModelForm):
     """
     Formulaire pour la création ou la modification d'un opérateur.
@@ -214,6 +217,7 @@ class OperateurForm(ModelForm):
         return user
     
 
+# region modifier profil
 class ModifierProfilForm(ModelForm):
     """
     Formulaire pour la modification du profil utilisateur.
@@ -236,6 +240,7 @@ class ModifierProfilForm(ModelForm):
         fields = ['first_name','last_name','sexe','region','statut_fumeur','nombre_enfant','email','date_de_naissance','telephone','poids','taille']
 
 
+# region modifier opérateur
 class OperateurModification(ModelForm):
     """
     Formulaire pour la modification des informations d'un opérateur.
@@ -253,6 +258,7 @@ class OperateurModification(ModelForm):
     widgets = {'date_de_naissance': forms.DateInput(format="%Y-%m-%d", attrs={'type': 'date'})}
     
 
+# region client
 class ClientForm(ModelForm):
     """
     Formulaire pour la création ou la modification d'un client.
@@ -362,6 +368,7 @@ class ClientForm(ModelForm):
         return user
     
 
+# region prospect
 class ProspectForm(ClientForm):
     """
     Formulaire pour la création ou la modification d'un prospect.
@@ -429,6 +436,7 @@ class ProspectForm(ClientForm):
         return user    
 
 
+# region devis
 class DevisForm(ClientForm):
     """
     Formulaire pour la création d'un devis d'assurance.
@@ -491,4 +499,19 @@ class DevisForm(ClientForm):
         except Exception as e:
             print(f"Erreur lors du calcul : {e}")
             return None
+    
+
+# region  contact
+class ContactForm(forms.Form):
+    """
+    Formulaire de contact permettant aux utilisateurs d'envoyer un message.
+
+    Champs :
+        nom (CharField) : Champ pour le nom de l'expéditeur (max 100 caractères).
+        email (EmailField) : Champ pour l'adresse e-mail de l'expéditeur.
+        message (CharField) : Champ pour le message, affiché sous forme de zone de texte.
+    """
+    nom = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    message = forms.CharField(widget=forms.Textarea)
     

@@ -2,14 +2,14 @@ from django.shortcuts import redirect, render
 from django.views.generic import View, ListView, FormView
 from .models import Prediction, User, RendezVous
 from django.views.generic.edit import CreateView
-from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm, ModifierProfilForm, RendezVousForm, LoginForm
+from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm, ModifierProfilForm, RendezVousForm, LoginForm, ContactForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from .models import User
+from django.core.mail import send_mail
 import datetime
 
 
@@ -17,36 +17,63 @@ import datetime
 
 # Create your views here.
 
-class AccueilView(View) : 
+# region Accueil
+
+class AccueilView(View):
     """
-    Vue pour afficher la page d'accueil.
+    Vue pour la page d'accueil.
 
-    Cette vue gère l'affichage de la page d'accueil de l'application. Elle est responsable de 
-    rendre le template `accueil.html`.
-
-    Attributs :
-        template_name (str) : Le nom du template à utiliser pour afficher la page d'accueil.
-
-    Méthodes :
-        get(request) : Récupère la requête HTTP GET et rend la page d'accueil en utilisant le template spécifié.
+    Cette vue gère l'affichage de la page d'accueil ainsi que le traitement du formulaire de contact.
+    Elle permet aux utilisateurs d'envoyer un message via un formulaire.
     """
     template_name = "assurance/accueil.html"
-    
-    def get(self, request) :
+
+    def get(self, request):
         """
-        Renders the homepage using the specified template.
+        Gère les requêtes GET pour afficher la page d'accueil.
 
-        Cette méthode traite la requête GET et affiche le template `accueil.html` en réponse à la demande de la page d'accueil.
+        Args:
+            request (HttpRequest): La requête HTTP entrante.
 
-        Arguments :
-            request (HttpRequest) : L'objet de la requête HTTP contenant les informations nécessaires pour rendre la page.
-
-        Retour :
-            HttpResponse : Renvoie la page d'accueil rendue à l'utilisateur.
+        Returns:
+            HttpResponse: La réponse contenant le rendu du template d'accueil.
         """
         return render(request, self.template_name)
 
+    def post(self, request):
+        """
+        Gère les requêtes POST pour traiter le formulaire de contact.
 
+        Vérifie si tous les champs du formulaire sont remplis et tente d'envoyer un e-mail
+        contenant le message soumis. Affiche un message de succès ou d'erreur en fonction du résultat.
+
+        Args:
+            request (HttpRequest): La requête HTTP contenant les données du formulaire.
+
+        Returns:
+            HttpResponseRedirect: Redirige l'utilisateur vers la page d'accueil après traitement du formulaire.
+        """
+        nom = request.POST.get('nom')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+        if nom and email and message:
+            try:
+                send_mail(
+                    subject=f'Nouveau message de {nom}',
+                    message=f'De: {email}\n\nMessage:\n{message}',
+                    from_email='alghom.ia@gmail.com',
+                    recipient_list=['assur.aimant59@gmail.com'],
+                    fail_silently=False,
+                )
+                messages.success(request, "Votre message a été envoyé avec succès!")
+            except Exception as e:
+                messages.error(request, "Une erreur s'est produite lors de l'envoi du message.")
+        else:
+            messages.error(request, "Veuillez remplir tous les champs du formulaire.")
+        return redirect('accueil')
+
+
+# region Authentification
 class AuthentificationView(View):
     """
     Vue pour gérer l'authentification des utilisateurs.
@@ -110,6 +137,7 @@ class AuthentificationView(View):
         return render(request, self.template_name, {"form": form, "message": message})
 
 
+# region Deconnexion
 def deconnexion(request):
     """
     Gère la déconnexion de l'utilisateur.
@@ -125,7 +153,8 @@ def deconnexion(request):
     logout(request)
     return redirect('accueil')
 
-    
+
+# region Inscription
 class InscriptionView(View):
     """
     Vue pour l'inscription d'un prospect.
@@ -174,48 +203,7 @@ class InscriptionView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class password_reset(View) : 
-    """
-    Vue pour la réinitialisation du mot de passe.
-
-    Cette vue permet à un utilisateur de demander la réinitialisation de son mot de passe en fournissant son adresse email.
-    Un lien de réinitialisation sera envoyé à l'email fourni.
-
-    Attributs :
-        template_name (str) : Le nom du template à utiliser pour rendre la page de réinitialisation.
-
-    Méthodes :
-        get(request) : Gère la requête GET et rend la page de demande de réinitialisation du mot de passe.
-        post(request) : Gère la soumission de l'email pour la réinitialisation et redirige l'utilisateur vers une page de confirmation ou d'instructions.
-    """
-    template_name = "assurance/password_reset.html"
-    
-    def get(self, request) :
-        """
-        Gère la requête GET pour afficher le formulaire de réinitialisation du mot de passe.
-
-        Arguments :
-            request (HttpRequest) : L'objet de la requête HTTP.
-
-        Retour :
-            HttpResponse : La page de réinitialisation du mot de passe avec le formulaire vide.
-        """
-        return render(request, self.template_name)
-    
-    def post(self, request):
-        """
-        Gère la soumission de l'email pour la réinitialisation du mot de passe.
-
-        Arguments :
-            request (HttpRequest) : L'objet de la requête HTTP.
-
-        Retour :
-            HttpResponseRedirect : Redirige vers la page de confirmation de réinitialisation ou d'instructions.
-        """
-        email = request.POST.get("email")
-        return redirect("url de reset")
-
-
+# region Couverture
 class CouvertureView(View) : 
     """
     Vue pour afficher la page de couverture d'assurance.
@@ -243,6 +231,7 @@ class CouvertureView(View) :
         return render(request, self.template_name)
 
 
+# region Devis
 class DevisView(View):
     """
     Vue pour afficher la page de devis d'assurance.
@@ -295,6 +284,7 @@ class DevisView(View):
         return render(request, self.template_name, {'form': form})
 
 
+# region Modifier profil
 class ModifierProfilView(View):
     """
     Vue permettant à un utilisateur de modifier son profil.
@@ -341,6 +331,7 @@ class ModifierProfilView(View):
             return redirect('page_utilisateur_client') 
 
 
+# region Mot de passe
 class ModifierPasswordView(LoginRequiredMixin, FormView):
     """
     Vue permettant à un utilisateur de modifier son mot de passe.
@@ -406,9 +397,9 @@ class ModifierPasswordView(LoginRequiredMixin, FormView):
         return super().form_invalid(form)
         
     
-#############
-# predictions
-#############
+####################
+# region predictions
+####################
 
 class ListePredictions(ListView):
     """
@@ -451,9 +442,9 @@ class ListePredictions(ListView):
             return redirect('/liste_predictions_tableau')
 
 
-#############
+####################
 # region Rendez-vous
-#############
+####################
 
 class RendezVousView(View):
     """
@@ -541,9 +532,9 @@ class ListeRendezVous(ListView):
             return redirect('/liste_rendez_vous_tableau')
 
 
-###########
-# opérateur
-###########
+##################
+# region opérateur
+##################
 
 class ListeOperateurs(ListView):
     """
@@ -672,9 +663,9 @@ class ModifierOperateur(View):
 
         return render(request, 'assurance/detail_operateur.html', {'form': form, 'operateur': operateur})
     
-########
-# client
-########
+###############
+# region client
+###############
 
 class ListeClients(ListView):
     """
@@ -767,9 +758,9 @@ class ModifierCLient(View):
         return render(request, 'assurance/detail_client.html', {'form': form, 'client': client})
 
 
-##########
-# prospect
-##########
+#################
+# region prospect
+#################
 
 class EnregistrerProspect(CreateView):
     """
@@ -883,3 +874,6 @@ class ClientProfil(ListView):
         return redirect('page_utilisateur_client')   
     
 
+################
+# region contact
+################
