@@ -1,11 +1,13 @@
 from django.shortcuts import redirect, render
-from django.views.generic import View, ListView, TemplateView, DetailView, UpdateView
-from .models import Prediction, User
+from django.views.generic import View, ListView, FormView
+from .models import Prediction, User, RendezVous
 from django.views.generic.edit import CreateView, UpdateView
-from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm, ModifierProfilForm
+from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm, ModifierProfilForm, RendezVousForm
 from django.urls import reverse_lazy
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from .models import User
@@ -16,8 +18,8 @@ import datetime
 
 
 
+
 # Create your views here.
-#region Operateurs
 
 class AccueilView(View) : 
     template_name = "assurance/accueil.html"
@@ -39,14 +41,10 @@ class AuthentificationView(View):
         form = LoginForm(request.POST)
         message = ""
         if form.is_valid():
-            user = authenticate(
-                username=form.cleaned_data["username"],
-                password=form.cleaned_data["password"],
-            )
+            user = authenticate(username=form.cleaned_data["username"], password=form.cleaned_data["password"],)
             if user is not None:
                 login(request, user)
                 return redirect("page_utilisateur_client")
-                
             else:
                 message = "Identifiants invalides."
         return render(request, self.template_name, {"form": form, "message": message})
@@ -97,11 +95,13 @@ class DevisView(View):
     def get(self, request):
         form = DevisForm()
         return render(request, self.template_name, {"form": form})
-
+    
     def post(self, request):
         form = DevisForm(request.POST)
         if form.is_valid():
             montant = form.calculer()
+            prediction = Prediction(nom=form.cleaned_data['last_name'], prenom=form.cleaned_data['first_name'], email=form.cleaned_data['email'], telephone=form.cleaned_data['telephone'], montant_charges=montant)
+            prediction.save()
             messages.success(request, f"Le montant estimé de votre assurance est de {montant:.2f} €")
             return render(request, self.template_name, {'form': form})
         return render(request, self.template_name, {'form': form})
@@ -122,12 +122,83 @@ class ModifierProfilView(View):
             return redirect('page_utilisateur_client') 
 
 
-class RendezVous(View) : 
-    template_name = "assurance/rendezvous.html"
-    
-    def get(self, request) :
-        return render(request, self.template_name)
+class ModifierPasswordView(LoginRequiredMixin, FormView):
+    template_name = 'assurance/modifier_password.html'
+    form_class = PasswordChangeForm
+    success_url = reverse_lazy('page_utilisateur_client')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        if self.request.method == "POST":
+            kwargs['data'] = self.request.POST
+        return kwargs
+
+    def form_valid(self, form):
+        user = form.save()
+        update_session_auth_hash(self.request, user)
+        messages.success(self.request, 'Votre mot de passe a été modifié avec succès!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+        
+    
+#############
+# predictions
+#############
+
+class ListePredictions(ListView):
+    model = Prediction
+    template_name = "assurance/liste_predictions_tableau.html"
+    context_object_name = "predictions"
+
+    def post(self, request):
+        prediction_id = request.POST.get('prediction_id')
+        if prediction_id:
+            prediction = Prediction.objects.get(id=prediction_id)
+            prediction.delete()
+            return redirect('/liste_predictions_tableau')
+
+
+#############
+# Rendez-vous
+#############
+
+class RendezVousView(View):
+    template_name = "assurance/rendezvous.html"
+
+    def get(self, request):
+        form = RendezVousForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = RendezVousForm(request.POST)
+        if form.is_valid():
+            rdv = form.save(commit=False)
+            rdv.id_client = request.user
+            rdv.save()
+            messages.success(request, "Rendez-vous enregistré avec succès !")
+            return redirect('page_utilisateur_client')
+        return render(request, self.template_name, {'form': form})
+
+
+class ListeRendezVous(ListView):
+    model = RendezVous
+    template_name = "assurance/liste_rendez_vous_tableau.html"
+    context_object_name = "rendezvous"
+
+    def post(self, request):
+        rdv_id = request.POST.get('rdv_id')
+        if rdv_id:
+            rendez_vous = RendezVous.objects.get(id=rdv_id)
+            rendez_vous.delete()
+            return redirect('/liste_rendez_vous_tableau')
+
+
+###########
+# opérateur
+###########
 
 class ListeOperateurs(ListView):
     model = User
@@ -139,20 +210,19 @@ class ListeOperateurs(ListView):
     
     def post(self, request):
         username = request.POST.get('username')
-
         if username:
             opetateur = User.objects.filter(username = username).first()
-            
             if opetateur:
                 opetateur.delete()
-
                 return redirect('/liste_operateurs_tableau')
     
+
 class EnregistrerOperateur(CreateView):
     model = User
     form_class = OperateurForm
     template_name = 'assurance/enregistrer_operateur.html'
     success_url = reverse_lazy('liste_operateurs')
+
 
 class ModifierOperateur(View):
     def get(self, request, username):
@@ -172,10 +242,10 @@ class ModifierOperateur(View):
 
         return render(request, 'assurance/detail_operateur.html', {'form': form, 'operateur': operateur})
     
+########
+# client
+########
 
-
-#region clients
-    
 class ListeClients(ListView):
     model = User
     template_name = 'assurance/liste_clients_tableau.html'
@@ -186,14 +256,12 @@ class ListeClients(ListView):
     
     def post(self, request):
         username = request.POST.get('username')
-
         if username:
             client = User.objects.filter(username = username).first()
-            
             if client:
                 client.delete()
-
                 return redirect('/liste_clients_tableau')
+
 
 class EnregistrerClient(CreateView):
     model = User
@@ -219,8 +287,9 @@ class ModifierCLient(View):
         return render(request, 'assurance/detail_client.html', {'form': form, 'client': client})
 
 
-
-# region Prospect
+##########
+# prospect
+##########
 
 class EnregistrerProspect(CreateView):
     model = User
@@ -238,31 +307,21 @@ class ListeProspects(ListView):
         return User.objects.filter(is_prospect = 1)
     
     def post(self, request):
-       
         username_delete = request.POST.get('username_delete')
         print(request.POST)
-
         if username_delete:
-            prospect = User.objects.filter(username = username_delete).first()
-            
+            prospect = User.objects.filter(username = username_delete).first()            
             if prospect:
                 prospect.delete()
-
-                
-
         username_client = request.POST.get('username_client')
-
         if username_client:
             prospect = User.objects.filter(username = username_client).first()
-            
             if prospect:
                 prospect.is_prospect = False
                 prospect.is_client = True
                 prospect.save()
-            
-
-
         return redirect('/liste_prospects_tableau')
+    
     
 class ModifierProspect(View):
     def get(self, request, username):
@@ -277,14 +336,8 @@ class ModifierProspect(View):
         if form.is_valid():
             form.save()  
             return redirect('/liste_prospects_tableau/')  
-
         return render(request, 'assurance/detail_prospect.html', {'form': form, 'prospect': prospect})
 
-
-
-
-
-# region Page profil
 
 class ClientProfil(ListView):
     model = User 
@@ -304,6 +357,55 @@ class ClientProfil(ListView):
         messages.success(request, "Vous êtes maintenant client!")
         return redirect('page_utilisateur_client')   
     
-      
-    
+
+
+########################################################
+
+## améliorations : 
+
+# class ModifierUtilisateurBase(View):
+#     template_name = None
+#     form_class = None
+#     redirect_url = None
+#     context_object_name = None
+
+#     def get(self, request, username):
+#         user = User.objects.get(username=username)
+#         form = self.form_class(instance=user)
+#         return render(request, self.template_name, {
+#             'form': form,
+#             self.context_object_name: user
+#         })
+
+#     def post(self, request, username):
+#         user = User.objects.get(username=username)
+#         form = self.form_class(request.POST, instance=user)
+
+#         if form.is_valid():
+#             form.save()
+#             return redirect(self.redirect_url)
+
+#         return render(request, self.template_name, {
+#             'form': form,
+#             self.context_object_name: user
+#         })
+
+# class ModifierOperateur(ModifierUtilisateurBase):
+#     template_name = 'assurance/detail_operateur.html'
+#     form_class = OperateurForm
+#     redirect_url = '/liste_operateurs_tableau/'
+#     context_object_name = 'operateur'
+
+# class ModifierClient(ModifierUtilisateurBase):
+#     template_name = 'assurance/detail_client.html'
+#     form_class = ClientForm
+#     redirect_url = '/liste_clients_tableau/'
+#     context_object_name = 'client'
+
+# class ModifierProspect(ModifierUtilisateurBase):
+#     template_name = 'assurance/detail_prospect.html'
+#     form_class = ProspectForm
+#     redirect_url = '/liste_prospects_tableau/'
+#     context_object_name = 'prospect'
+
     
