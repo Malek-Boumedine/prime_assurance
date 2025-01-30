@@ -34,8 +34,7 @@ DEBUG = os.getenv("DEBUG", "True") == "True"
 # # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", 'assuraimant.herokuapp.com']
-
+ALLOWED_HOSTS = ['assuraimant-0ebc0475d742.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
