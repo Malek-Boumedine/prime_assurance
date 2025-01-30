@@ -1,19 +1,15 @@
 from django.shortcuts import redirect, render
 from django.views.generic import View, ListView, FormView
 from .models import Prediction, User, RendezVous
-from django.views.generic.edit import CreateView, UpdateView
-from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm, ModifierProfilForm, RendezVousForm
+from django.views.generic.edit import CreateView
+from .forms import OperateurForm, ClientForm, ProspectForm, DevisForm, ModifierProfilForm, RendezVousForm, LoginForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from .models import User
-from . import forms
-from .forms import LoginForm
-from django.http import HttpResponse
 import datetime
 
 
@@ -162,7 +158,7 @@ class ListePredictions(ListView):
 
 
 #############
-# Rendez-vous
+# region Rendez-vous
 #############
 
 class RendezVousView(View):
