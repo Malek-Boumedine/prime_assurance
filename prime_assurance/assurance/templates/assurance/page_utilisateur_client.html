@@ -47,6 +47,10 @@
                     <h3 class="mt-3 text-center text-lg font-semibold text-emerald-600">
                         {% if client.is_prospect or client.is_client %}
                             Montant annuel des charges : {{client.charges|floatformat:2}} €
+                        {% elif user.poste == 'manager' %}
+                            Manager
+                        {% elif user.poste == 'courtier' %}
+                            Courtier
                         {% else %}
                             Admin
                         {% endif %}
@@ -68,9 +72,12 @@
                             <span class="font-medium">nom d'utilisateur</span>
                             <span class="ml-auto text-gray-600">{{client.username}}</span>
                         </li>
-                        <li class="flex items-center justify-between py-3 text-sm">
-                            <span class="font-medium">Date de souscription</span>
-                            <span class="ml-auto text-gray-600">{{client.date_souscription}}</span>
+                        {% if client.is_prospect or client.is_client %}
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Date de souscription</span>
+                                <span class="ml-auto text-gray-600">{{client.date_souscription}}</span>
+                        {% endif %}
+
                         </li>
                         <li class="flex items-center justify-between py-3 text-sm">
                             <span class="font-medium">Date de naissance</span>
@@ -84,31 +91,34 @@
                             <span class="font-medium">Email</span>
                             <span class="ml-auto text-gray-600">{{client.email}}</span>
                         </li>
-                        <li class="flex items-center justify-between py-3 text-sm">
-                            <span class="font-medium">Taille</span>
-                            <span class="ml-auto text-gray-600">{{client.taille}} cm</span>
-                        </li>
-                        <li class="flex items-center justify-between py-3 text-sm">
-                            <span class="font-medium">Poids</span>
-                            <span class="ml-auto text-gray-600">{{client.poids}} kg</span>
-                        </li>
-                        <li class="flex items-center justify-between py-3 text-sm">
-                            <span class="font-medium">Indice de masse corporelle</span>
-                            <span class="ml-auto text-gray-600">{{client.imc|floatformat:2}} </span>
-                        </li>
+                        {% if client.is_prospect or client.is_client %}
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Taille</span>
+                                <span class="ml-auto text-gray-600">{{client.taille}} cm</span>
+                            </li>
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Poids</span>
+                                <span class="ml-auto text-gray-600">{{client.poids}} kg</span>
+                            </li>
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Indice de masse corporelle</span>
+                                <span class="ml-auto text-gray-600">{{client.imc|floatformat:2}} </span>
+                            </li>
 
-                        <li class="flex items-center justify-between py-3 text-sm">
-                            <span class="font-medium">Fumeur</span>
-                            <span class="ml-auto text-gray-600">{% if client.statut_fumeur %}Oui{% else %}Non{% endif %}</span>
-                        </li>
-                        <li class="flex items-center justify-between py-3 text-sm">
-                            <span class="font-medium">Nombre d'enfants</span>
-                            <span class="ml-auto text-gray-600">{{client.nombre_enfant}}</span>
-                        </li>
-                        <li class="flex items-center justify-between py-3 text-sm">
-                            <span class="font-medium">Région</span>
-                            <span class="ml-auto text-gray-600">{{client.region}}</span>
-                        </li>
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Fumeur</span>
+                                <span class="ml-auto text-gray-600">{% if client.statut_fumeur %}Oui{% else %}Non{% endif %}</span>
+                            </li>
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Nombre d'enfants</span>
+                                <span class="ml-auto text-gray-600">{{client.nombre_enfant}}</span>
+                            </li>
+                            <li class="flex items-center justify-between py-3 text-sm">
+                                <span class="font-medium">Région</span>
+                                <span class="ml-auto text-gray-600">{{client.region}}</span>
+                            </li>
+                        {% endif %}
+
                     </ul>
                 </div>
                 {% if client.is_prospect %}
