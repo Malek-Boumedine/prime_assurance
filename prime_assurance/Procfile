@@ -1,1 +1,1 @@
-web: gunicorn prime_assurance.wsgi
+web: cd prime_assurance && gunicorn prime_assurance.wsgi
