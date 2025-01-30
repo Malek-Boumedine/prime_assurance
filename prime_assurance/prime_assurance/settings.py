@@ -34,7 +34,7 @@ DEBUG = os.getenv("DEBUG", "True") == "True"
 # # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = ['assuraimant-0ebc0475d742.herokuapp.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['malekb.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
