@@ -4,6 +4,15 @@
 {% block title %}Accueil - Prime Assurance{% endblock %}
 
 {% block content %}
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="p-4 {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} rounded-lg">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
   <section class="text-gray-600 body-font">
     <div class="container px-5 py-24 mx-auto">
       <div class="flex flex-wrap -m-4">
@@ -42,19 +51,19 @@
     <div class="flex flex-wrap justify-center items-center h-auto p-5 pl-[6%] pt-[9%]">
       <div class="w-full md:w-2/5 p-4">
         <h2 class="text-xl md:text-7xl font-semibold mb-5">Ecrivez nous !</h2>
-        <form class="space-y-4">
+        <form method="POST" class="space-y-4">
+          {% csrf_token %}
           <div>
-            <input type="text" id="fullName" name="fullName" placeholder='Nom complet' class="mt-1 p-4 w-full border rounded-md" />
+              <input type="text" name="nom" placeholder='Nom complet' class="mt-1 p-4 w-full border rounded-md" required />
           </div>
           <div>
-            <input type="email" id="email" name="email" placeholder='Email' class="mt-1 p-4 w-full border rounded-md" />
+              <input type="email" name="email" placeholder='Email' class="mt-1 p-4 w-full border rounded-md" required />
           </div>
           <div>
-            <textarea id="message" name="message" placeholder='Message' class="mt-1 p-4 w-full border rounded-md" rows="4"></textarea>
+              <textarea name="message" placeholder='Message' class="mt-1 p-4 w-full border rounded-md" rows="4" required></textarea>
           </div>
-          <button type="submit" class="px-8 py-4 bg-black text-white hover:bg-blue-700">Submit</button>
-        </form>
-      </div>
+          <button type="submit" class="px-8 py-4 bg-black text-white hover:bg-blue-700">Envoyer</button>
+      </form>      </div>
       <div class="w-full md:w-1/2 p-4 flex justify-center">
         <div class="rounded-full overflow-hidden w-[35rem] h-[35rem]">
           <iframe
