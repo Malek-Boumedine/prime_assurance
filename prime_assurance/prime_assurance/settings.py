@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import django_heroku
+
 
 load_dotenv()
 
@@ -32,7 +34,7 @@ DEBUG = os.getenv("DEBUG", "True") == "True"
 # # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "malekb.pythonanywhere.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", 'assuraimant-9e56711ac661.herokuapp.com']
 
 
 
@@ -89,7 +91,7 @@ WSGI_APPLICATION = 'prime_assurance.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -128,7 +130,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
@@ -148,4 +150,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'alghom.ia@gmail.com'
 EMAIL_HOST_PASSWORD = 'wosdxtiuxexloijz'
+
+
+django_heroku.settings(locals())
 
