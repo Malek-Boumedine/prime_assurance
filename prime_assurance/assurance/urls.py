@@ -30,5 +30,35 @@ urlpatterns = [
     path('liste_operateur/<str:username>/', ModifierOperateur.as_view(), name='detail_operateur'),
     path('liste_clients/<str:username>/', ModifierCLient.as_view(), name='detail_client'),
     path('liste_prospects/<str:username>/', ModifierCLient.as_view(), name='detail_prospect'),
-
 ]
+"""
+Liste des URL patterns de l'application.
+
+Ces URL patterns sont utilisés pour relier chaque URL aux vues correspondantes de l'application, permettant ainsi 
+la navigation vers des pages spécifiques telles que l'accueil, la gestion des utilisateurs (prospects, clients, opérateurs), 
+les prédictions, les rendez-vous, ainsi que la gestion du profil utilisateur et des mots de passe.
+
+Attributs :
+    AccueilView : Vue pour la page d'accueil.
+    ListeProspects : Vue pour afficher la liste des prospects.
+    ListeClients : Vue pour afficher la liste des clients.
+    ListeOperateurs : Vue pour afficher la liste des opérateurs.
+    ListeRendezVous : Vue pour afficher la liste des rendez-vous.
+    ListePredictions : Vue pour afficher la liste des prédictions.
+    EnregistrerOperateur : Vue pour l'enregistrement d'un opérateur.
+    EnregistrerClient : Vue pour l'enregistrement d'un client.
+    EnregistrerProspect : Vue pour l'enregistrement d'un prospect.
+    AccueilView : Vue pour la page d'accueil.
+    AuthentificationView : Vue pour la page d'authentification.
+    CouvertureView : Vue pour la page de couverture d'assurance.
+    DevisView : Vue pour la page de devis.
+    InscriptionView : Vue pour la page d'inscription.
+    RendezVousView : Vue pour la page de prise de rendez-vous.
+    password_reset : Vue pour réinitialiser le mot de passe.
+    ClientProfil : Vue pour afficher le profil client.
+    deconnexion : Vue pour gérer la déconnexion de l'utilisateur.
+    ModifierProfilView : Vue pour modifier le profil de l'utilisateur.
+    ModifierPasswordView : Vue pour modifier le mot de passe de l'utilisateur.
+    ModifierOperateur : Vue pour modifier un opérateur spécifique.
+    ModifierCLient : Vue pour modifier un client ou un prospect spécifique.
+"""
